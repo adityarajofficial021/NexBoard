@@ -918,3 +918,145 @@ body {
     fill: var(--text-main);
     text-anchor: middle;
 }
+/* ---------------------------------------------------- */
+/* ACTIVITY LOG SIDEBAR STYLING */
+/* ---------------------------------------------------- */
+
+.activity-log-sidebar {
+    width: 280px;
+    background-color: var(--bg-card);
+    border-left: 1px solid var(--border-subtle);
+    display: flex;
+    flex-direction: column;
+    padding: 24px 18px;
+    overflow-y: auto;
+    flex-shrink: 0;
+}
+
+.activity-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.activity-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text-main);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.activity-title i {
+    color: var(--brand-teal-dark);
+}
+
+.activity-graph-icon {
+    color: var(--text-muted);
+    font-size: 1rem;
+    cursor: pointer;
+    transition: var(--transition-fast);
+}
+
+.activity-graph-icon:hover {
+    color: var(--text-main);
+}
+
+.activity-section {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 24px;
+}
+
+.activity-date-heading {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--text-light);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 16px;
+}
+
+.activity-list-container {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.activity-item {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+}
+
+.activity-user-avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.activity-details {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.activity-text {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    line-height: 1.4;
+}
+
+/* Specific styling for highlights in activity descriptions */
+.act-name {
+    font-weight: 600;
+    color: var(--text-main);
+}
+
+.act-target {
+    font-weight: 500;
+    color: #4f46e5; /* Soft Indigo */
+}
+
+.act-status {
+    font-weight: 500;
+    color: #2563eb; /* Royal Blue */
+}
+
+.act-bold {
+    font-weight: 600;
+    color: var(--text-main);
+}
+
+.activity-time {
+    font-size: 0.72rem;
+    color: var(--text-light);
+}
+
+.btn-view-all-activity {
+    margin-top: auto;
+    background-color: var(--bg-sidebar);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-muted);
+    font-size: 0.82rem;
+    font-weight: 600;
+    padding: 10px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: var(--transition-fast);
+    width: 100%;
+}
+
+.btn-view-all-activity:hover {
+    background-color: #e2e8f0;
+    color: var(--text-main);
+}
