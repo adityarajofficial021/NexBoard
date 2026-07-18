@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NexBoard - Project Management Board</title>
+    <!-- Link to external custom styles -->
+    <link rel="stylesheet" href="css/styles.css">
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    
+    <!-- Top-level container for Desktop Layout -->
+    <div class="desktop-layout">
+        
+        <!-- TOP NAVBAR -->
+        <header class="desktop-header">
+            <!-- Left brand section -->
+            <div class="header-left">
+                <div class="brand-logo">
+                    <i class="fa-solid fa-square-check"></i>
+                    <span class="brand-name">NexBoard</span>
+                    <i class="fa-solid fa-chevron-down dropdown-arrow"></i>
+                </div>
+                <div class="project-selector">
+                    <span class="project-title">Website Redesign</span>
+                    <span class="badge-public">Public</span>
+                </div>
+            </div>
+
+            <!-- Middle search input -->
+            <div class="header-center">
+                <div class="search-box">
+                    <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                    <input type="text" placeholder="Search tasks, members, tags..." id="desktop-search">
+                    <span class="shortcut-key">⌘ K</span>
+                </div>
+            </div>
+
+            <!-- Right user & control section -->
+            <div class="header-right">
+                <button class="btn-filter"><i class="fa-solid fa-sliders"></i> Filters</button>
+                <div class="group-selector">
+                    <span>Group: None</span>
+                    <i class="fa-solid fa-chevron-down"></i>
+                </div>
+                <button class="btn-primary btn-add-task-trigger"><i class="fa-solid fa-plus"></i> Add Task</button>
+                
+                <!-- Notification bell -->
+                <div class="notification-bell">
+                    <i class="fa-regular fa-bell"></i>
+                    <span class="notification-badge">3</span>
+                </div>
+
+                <!-- User profile status -->
+                <div class="user-profile">
+                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&h=100&q=80" alt="Profile" class="avatar-img">
+                    <span class="status-dot online"></span>
+                </div>
+            </div>
+        </header>
+
+        <!-- SIDEBAR & MAIN BODY WRAPPER -->
+        <div class="main-container">
+            
+            <!-- LEFT SIDEBAR -->
+            <aside class="sidebar">
+                <!-- Navigation links -->
+                <nav class="sidebar-nav">
+                    <a href="#" class="nav-item active">
+                        <i class="fa-solid fa-table-columns"></i>
+                        <span>Board</span>
+                    </a>
+                    <a href="#" class="nav-item">
+                        <i class="fa-solid fa-check-double"></i>
+                        <span>My Tasks</span>
+                        <span class="nav-badge">8</span>
+                    </a>
+                    <a href="#" class="nav-item">
+                        <i class="fa-solid fa-inbox"></i>
+                        <span>Inbox</span>
+                        <span class="nav-badge">4</span>
+                    </a>
+                    <a href="#" class="nav-item">
+                        <i class="fa-regular fa-calendar-days"></i>
+                        <span>Calendar</span>
+                    </a>
+                    <a href="#" class="nav-item">
+                        <i class="fa-solid fa-chart-gantt"></i>
+                        <span>Timeline</span>
+                    </a>
+                    <a href="#" class="nav-item">
+                        <i class="fa-regular fa-chart-bar"></i>
+                        <span>Reports</span>
+                    </a>
+                </nav>
+
+                <!-- Project List Section -->
+                <div class="sidebar-section">
+                    <div class="section-header">
+                        <span>Projects</span>
+                        <button class="btn-section-add"><i class="fa-solid fa-plus"></i></button>
+                    </div>
+                    <ul class="project-list">
+                        <li class="active"><span class="project-bullet redesign"></span> Website Redesign</li>
+                        <li><span class="project-bullet mobile"></span> Mobile App</li>
+                        <li><span class="project-bullet marketing"></span> Marketing Campaign</li>
+                        <li><span class="project-bullet launch"></span> Product Launch</li>
+                    </ul>
+                </div>
+
+                <!-- Team Section -->
+                <div class="sidebar-section">
+                    <div class="section-header">
+                        <span>Team</span>
+                        <button class="btn-section-add"><i class="fa-solid fa-plus"></i></button>
+                    </div>
+                    <ul class="team-list">
+                        <li>
+                            <div class="member-avatar">
+                                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=80&h=80&q=80" alt="Arjun">
+                                <span class="status-dot online"></span>
+                            </div>
+                            <div class="member-info">
+                                <span class="member-name">Arjun Sharma</span>
+                                <span class="member-role">Admin</span>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="member-avatar">
+                                <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=80&h=80&q=80" alt="Priya">
+                                <span class="status-dot online"></span>
+                            </div>
+                            <div class="member-info">
+                                <span class="member-name">Priya Singh</span>
+                                <span class="member-role">Designer</span>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="member-avatar">
+                                <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=80&h=80&q=80" alt="Rohan">
+                                <span class="status-dot online"></span>
+                            </div>
+                            <div class="member-info">
+                                <span class="member-name">Rohan Verma</span>
+                                <span class="member-role">Developer</span>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="member-avatar">
+                                <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=80&h=80&q=80" alt="Sneha">
+                                <span class="status-dot idle"></span>
+                            </div>
+                            <div class="member-info">
+                                <span class="member-name">Sneha Iyer</span>
+                                <span class="member-role">Developer</span>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="member-avatar">
+                                <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=80&h=80&q=80" alt="Ankit">
+                                <span class="status-dot offline"></span>
+                            </div>
+                            <div class="member-info">
+                                <span class="member-name">Ankit Patel</span>
+                                <span class="member-role">Tester</span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Invite members button at the bottom of sidebar -->
+                <button class="btn-invite-members">
+                    <i class="fa-solid fa-user-plus"></i> Invite Members
+                </button>
+            </aside>
+
+            <!-- Placeholder for Main Content and Columns -->
+            <main class="board-wrapper">
+                <p style="padding: 20px; color: var(--text-muted);">Board content loading...</p>
+            </main>
+
+        </div>
+    </div>
+
+</body>
+</html>
