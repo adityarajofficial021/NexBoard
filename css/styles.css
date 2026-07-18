@@ -1,0 +1,66 @@
+/* Import beautiful clean Inter font from Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+/* Reset and basic box sizing rules */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Core color palette and layout tokens */
+:root {
+    /* Brand & Layout Backgrounds */
+    --brand-teal-dark: #0f4c5c;      /* Deep dark teal for top header */
+    --brand-teal-light: #164e63;     /* Hover states/accents for brand */
+    --brand-teal-accent: #0284c7;    /* Secondary accent buttons */
+    
+    --bg-main: #f3f4f6;              /* Main dashboard workspace background */
+    --bg-sidebar: #f8fafc;           /* Light cool-gray left sidebar */
+    --bg-card: #ffffff;              /* Crisp clean white for boards and items */
+    --border-subtle: #e5e7eb;        /* Soft separator borders */
+
+    /* Typography colors */
+    --text-main: #1f2937;            /* Charcoal dark text for readability */
+    --text-muted: #6b7280;           /* Medium gray for descriptions and sub-labels */
+    --text-light: #9ca3af;           /* Light gray for metadata and placeholders */
+    
+    /* Column Color Systems (matching mockup) */
+    --col-backlog: #6366f1;          /* Indigo */
+    --col-backlog-bg: #eef2ff;
+    
+    --col-todo: #f59e0b;             /* Amber/Orange */
+    --col-todo-bg: #fffbeb;
+    
+    --col-inprogress: #3b82f6;       /* Royal Blue */
+    --col-inprogress-bg: #eff6ff;
+    
+    --col-review: #ec4899;           /* Vibrant Pink */
+    --col-review-bg: #fdf2f8;
+    
+    --col-done: #10b981;             /* Emerald Green */
+    --col-done-bg: #ecfdf5;
+
+    /* Priority Indicator Colors */
+    --priority-high: #ef4444;        /* Crimson red for High urgency */
+    --priority-medium: #f59e0b;      /* Warm amber for Medium urgency */
+    --priority-low: #10b981;         /* Green for Low urgency */
+    
+    /* Transitions & Shadows */
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 14px;
+    --transition-fast: 0.2s ease;
+}
+
+/* Global document settings */
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg-main);
+    color: var(--text-main);
+    overflow-x: hidden;
+    height: 100vh;
+}
