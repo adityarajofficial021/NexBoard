@@ -176,9 +176,91 @@
                 </button>
             </aside>
 
-            <!-- Placeholder for Main Content and Columns -->
+            <!-- MAIN BOARD AREA -->
             <main class="board-wrapper">
-                <p style="padding: 20px; color: var(--text-muted);">Board content loading...</p>
+                <div class="board-columns-container">
+                    
+                    <!-- COLUMN: BACKLOG -->
+                    <div class="board-column" data-status="backlog">
+                        <div class="column-header">
+                            <div class="header-title-wrapper">
+                                <span class="column-indicator indicator-backlog"></span>
+                                <h3 class="column-title">Backlog</h3>
+                                <span class="task-count-badge">5</span>
+                            </div>
+                            <button class="btn-column-more"><i class="fa-solid fa-ellipsis"></i></button>
+                        </div>
+                        <div class="task-list" id="list-backlog">
+                            <!-- Cards will go here -->
+                        </div>
+                        <button class="btn-column-add-task"><i class="fa-solid fa-plus"></i> Add Task</button>
+                    </div>
+
+                    <!-- COLUMN: TO DO -->
+                    <div class="board-column" data-status="todo">
+                        <div class="column-header">
+                            <div class="header-title-wrapper">
+                                <span class="column-indicator indicator-todo"></span>
+                                <h3 class="column-title">To Do</h3>
+                                <span class="task-count-badge">4</span>
+                            </div>
+                            <button class="btn-column-more"><i class="fa-solid fa-ellipsis"></i></button>
+                        </div>
+                        <div class="task-list" id="list-todo">
+                            <!-- Cards will go here -->
+                        </div>
+                        <button class="btn-column-add-task"><i class="fa-solid fa-plus"></i> Add Task</button>
+                    </div>
+
+                    <!-- COLUMN: IN PROGRESS -->
+                    <div class="board-column" data-status="inprogress">
+                        <div class="column-header">
+                            <div class="header-title-wrapper">
+                                <span class="column-indicator indicator-inprogress"></span>
+                                <h3 class="column-title">In Progress</h3>
+                                <span class="task-count-badge">3</span>
+                            </div>
+                            <button class="btn-column-more"><i class="fa-solid fa-ellipsis"></i></button>
+                        </div>
+                        <div class="task-list" id="list-inprogress">
+                            <!-- Cards will go here -->
+                        </div>
+                        <button class="btn-column-add-task"><i class="fa-solid fa-plus"></i> Add Task</button>
+                    </div>
+
+                    <!-- COLUMN: REVIEW -->
+                    <div class="board-column" data-status="review">
+                        <div class="column-header">
+                            <div class="header-title-wrapper">
+                                <span class="column-indicator indicator-review"></span>
+                                <h3 class="column-title">Review</h3>
+                                <span class="task-count-badge">2</span>
+                            </div>
+                            <button class="btn-column-more"><i class="fa-solid fa-ellipsis"></i></button>
+                        </div>
+                        <div class="task-list" id="list-review">
+                            <!-- Cards will go here -->
+                        </div>
+                        <button class="btn-column-add-task"><i class="fa-solid fa-plus"></i> Add Task</button>
+                    </div>
+
+                    <!-- COLUMN: DONE -->
+                    <div class="board-column" data-status="done">
+                        <div class="column-header">
+                            <div class="header-title-wrapper">
+                                <span class="column-indicator indicator-done"></span>
+                                <h3 class="column-title">Done</h3>
+                                <span class="task-count-badge">4</span>
+                            </div>
+                            <button class="btn-column-more"><i class="fa-solid fa-ellipsis"></i></button>
+                        </div>
+                        <div class="task-list" id="list-done">
+                            <!-- Cards will go here -->
+                        </div>
+                        <button class="btn-column-add-task"><i class="fa-solid fa-plus"></i> Add Task</button>
+                    </div>
+
+                </div>
             </main>
 
         </div>
