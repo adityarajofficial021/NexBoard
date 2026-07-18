@@ -771,3 +771,150 @@ body {
 .priority-medium { color: var(--priority-medium); }
 .priority-low { color: var(--priority-low); }
 
+/* ---------------------------------------------------- */
+/* STATISTICS PANEL STYLING */
+/* ---------------------------------------------------- */
+
+.stats-panel {
+    display: flex;
+    gap: 16px;
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border-subtle);
+    flex-wrap: wrap;
+}
+
+.stat-card {
+    flex: 1 1 200px;
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    box-shadow: var(--shadow-sm);
+}
+
+.stat-icon-wrapper {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+}
+
+/* Icon specific background and color codes */
+.total-tasks-icon {
+    background-color: #eef2ff;
+    color: #6366f1;
+}
+
+.in-progress-icon {
+    background-color: #eff6ff;
+    color: #3b82f6;
+}
+
+.completed-icon {
+    background-color: #ecfdf5;
+    color: #10b981;
+}
+
+.overdue-icon {
+    background-color: #fef2f2;
+    color: #ef4444;
+}
+
+.stat-info {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.stat-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-light);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 4px;
+}
+
+.stat-value-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
+.stat-value {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+.stat-trend {
+    font-size: 0.72rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    white-space: nowrap;
+}
+
+.stat-trend.trend-up {
+    color: #10b981;
+}
+
+.stat-trend.trend-down {
+    color: #ef4444;
+}
+
+.trend-sub {
+    color: var(--text-light);
+    font-weight: 400;
+    font-size: 0.65rem;
+    margin-left: 2px;
+}
+
+/* Radial Progress Dashboard Card */
+.stat-progress-card {
+    gap: 12px;
+}
+
+.progress-circle-wrapper {
+    width: 44px;
+    height: 44px;
+    flex-shrink: 0;
+}
+
+.radial-progress-svg {
+    width: 100%;
+    height: 100%;
+}
+
+.circle-bg {
+    fill: none;
+    stroke: #e2e8f0;
+    stroke-width: 3.8;
+}
+
+.circle {
+    fill: none;
+    stroke: #3b82f6; /* Blue progress indicator */
+    stroke-width: 3.8;
+    stroke-linecap: round;
+    transform: rotate(-90deg);
+    transform-origin: 50% 50%;
+}
+
+.percentage {
+    font-family: inherit;
+    font-size: 0.58rem;
+    font-weight: 700;
+    fill: var(--text-main);
+    text-anchor: middle;
+}
