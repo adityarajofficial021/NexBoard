@@ -24,7 +24,7 @@
                     <i class="fa-solid fa-chevron-down dropdown-arrow"></i>
                 </div>
                 <div class="project-selector">
-                    <span class="project-title">Website Redesign</span>
+                    <span class="project-title" id="desktop-project-title">Website Redesign</span>
                     <span class="badge-public">Public</span>
                 </div>
             </div>
@@ -102,11 +102,8 @@
                         <span>Projects</span>
                         <button class="btn-section-add"><i class="fa-solid fa-plus"></i></button>
                     </div>
-                    <ul class="project-list">
-                        <li class="active"><span class="project-bullet redesign"></span> Website Redesign</li>
-                        <li><span class="project-bullet mobile"></span> Mobile App</li>
-                        <li><span class="project-bullet marketing"></span> Marketing Campaign</li>
-                        <li><span class="project-bullet launch"></span> Product Launch</li>
+                    <ul class="project-list" id="desktop-project-list">
+                        <!-- Projects rendered dynamically by JS -->
                     </ul>
                 </div>
 
@@ -116,57 +113,8 @@
                         <span>Team</span>
                         <button class="btn-section-add"><i class="fa-solid fa-plus"></i></button>
                     </div>
-                    <ul class="team-list">
-                        <li>
-                            <div class="member-avatar">
-                                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=80&h=80&q=80" alt="Arjun">
-                                <span class="status-dot online"></span>
-                            </div>
-                            <div class="member-info">
-                                <span class="member-name">Arjun Sharma</span>
-                                <span class="member-role">Admin</span>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="member-avatar">
-                                <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=80&h=80&q=80" alt="Priya">
-                                <span class="status-dot online"></span>
-                            </div>
-                            <div class="member-info">
-                                <span class="member-name">Priya Singh</span>
-                                <span class="member-role">Designer</span>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="member-avatar">
-                                <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=80&h=80&q=80" alt="Rohan">
-                                <span class="status-dot online"></span>
-                            </div>
-                            <div class="member-info">
-                                <span class="member-name">Rohan Verma</span>
-                                <span class="member-role">Developer</span>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="member-avatar">
-                                <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=80&h=80&q=80" alt="Sneha">
-                                <span class="status-dot idle"></span>
-                            </div>
-                            <div class="member-info">
-                                <span class="member-name">Sneha Iyer</span>
-                                <span class="member-role">Developer</span>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="member-avatar">
-                                <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=80&h=80&q=80" alt="Ankit">
-                                <span class="status-dot offline"></span>
-                            </div>
-                            <div class="member-info">
-                                <span class="member-name">Ankit Patel</span>
-                                <span class="member-role">Tester</span>
-                            </div>
-                        </li>
+                    <ul class="team-list" id="desktop-team-list">
+                        <!-- Team members rendered dynamically by JS -->
                     </ul>
                 </div>
 
@@ -178,500 +126,14 @@
 
             <!-- MAIN BOARD AREA -->
             <main class="board-wrapper">
-                <div class="board-columns-container">
-                    
-                    <!-- COLUMN: BACKLOG (5 tasks) -->
-                    <div class="board-column" data-status="backlog">
-                        <div class="column-header">
-                            <div class="header-title-wrapper">
-                                <span class="column-indicator indicator-backlog"></span>
-                                <h3 class="column-title">Backlog</h3>
-                                <span class="task-count-badge">5</span>
-                            </div>
-                            <button class="btn-column-more"><i class="fa-solid fa-ellipsis"></i></button>
-                        </div>
-                        <div class="task-list" id="list-backlog">
-                            
-                            <!-- Card 1: Market Research -->
-                            <div class="task-card" draggable="true">
-                                <div class="card-header">
-                                    <span class="card-tag tag-research">Research</span>
-                                    <button class="btn-card-more"><i class="fa-solid fa-ellipsis"></i></button>
-                                </div>
-                                <h4 class="card-title">Market Research</h4>
-                                <p class="card-desc">Analyze competitors and market trends</p>
-                                <div class="card-footer">
-                                    <div class="assignees-group">
-                                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=80&h=80&q=80" alt="Arjun" title="Arjun Sharma">
-                                        <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=80&h=80&q=80" alt="Priya" title="Priya Singh">
-                                    </div>
-                                    <div class="card-meta">
-                                        <span class="card-due-date"><i class="fa-regular fa-calendar"></i> May 28</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Card 2: Brand Guidelines -->
-                            <div class="task-card" draggable="true">
-                                <div class="card-header">
-                                    <span class="card-tag tag-design">Design</span>
-                                    <button class="btn-card-more"><i class="fa-solid fa-ellipsis"></i></button>
-                                </div>
-                                <h4 class="card-title">Brand Guidelines</h4>
-                                <p class="card-desc">Create brand identity guidelines</p>
-                                <div class="card-footer">
-                                    <div class="assignees-group">
-                                        <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=80&h=80&q=80" alt="Priya" title="Priya Singh">
-                                    </div>
-                                    <div class="card-meta">
-                                        <span class="card-due-date"><i class="fa-regular fa-calendar"></i> May 30</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Card 3: Content Strategy -->
-                            <div class="task-card" draggable="true">
-                                <div class="card-header">
-                                    <span class="card-tag tag-marketing">Marketing</span>
-                                    <button class="btn-card-more"><i class="fa-solid fa-ellipsis"></i></button>
-                                </div>
-                                <h4 class="card-title">Content Strategy</h4>
-                                <p class="card-desc">Define content plan for the website</p>
-                                <div class="card-footer">
-                                    <div class="assignees-group">
-                                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=80&h=80&q=80" alt="Arjun" title="Arjun Sharma">
-                                    </div>
-                                    <div class="card-meta">
-                                        <span class="card-due-date"><i class="fa-regular fa-calendar"></i> Jun 02</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Card 4: SEO Audit -->
-                            <div class="task-card" draggable="true">
-                                <div class="card-header">
-                                    <span class="card-tag tag-seo">SEO</span>
-                                    <button class="btn-card-more"><i class="fa-solid fa-ellipsis"></i></button>
-                                </div>
-                                <h4 class="card-title">SEO Audit</h4>
-                                <p class="card-desc">Audit current website and SEO issues</p>
-                                <div class="card-footer">
-                                    <div class="assignees-group">
-                                        <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=80&h=80&q=80" alt="Rohan" title="Rohan Verma">
-                                    </div>
-                                    <div class="card-meta">
-                                        <span class="card-due-date"><i class="fa-regular fa-calendar"></i> Jun 04</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Card 5: Competitor Analysis -->
-                            <div class="task-card" draggable="true">
-                                <div class="card-header">
-                                    <span class="card-tag tag-research">Research</span>
-                                    <button class="btn-card-more"><i class="fa-solid fa-ellipsis"></i></button>
-                                </div>
-                                <h4 class="card-title">Competitor Analysis</h4>
-                                <p class="card-desc">Gather feature lists of main competitors</p>
-                                <div class="card-footer">
-                                    <div class="assignees-group">
-                                        <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=80&h=80&q=80" alt="Rohan" title="Rohan Verma">
-                                    </div>
-                                    <div class="card-meta">
-                                        <span class="card-due-date"><i class="fa-regular fa-calendar"></i> Jun 05</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-                        <button class="btn-column-add-task"><i class="fa-solid fa-plus"></i> Add Task</button>
-                    </div>
-
-                    <!-- COLUMN: TO DO (4 tasks) -->
-                    <div class="board-column" data-status="todo">
-                        <div class="column-header">
-                            <div class="header-title-wrapper">
-                                <span class="column-indicator indicator-todo"></span>
-                                <h3 class="column-title">To Do</h3>
-                                <span class="task-count-badge">4</span>
-                            </div>
-                            <button class="btn-column-more"><i class="fa-solid fa-ellipsis"></i></button>
-                        </div>
-                        <div class="task-list" id="list-todo">
-                            
-                            <!-- Card 1: Landing Page Design -->
-                            <div class="task-card" draggable="true">
-                                <div class="card-header">
-                                    <span class="card-tag tag-design">Design</span>
-                                    <button class="btn-card-more"><i class="fa-solid fa-ellipsis"></i></button>
-                                </div>
-                                <h4 class="card-title">Landing Page Design</h4>
-                                <p class="card-desc">Design the new landing page</p>
-                                <div class="card-footer">
-                                    <div class="assignees-group">
-                                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=80&h=80&q=80" alt="Arjun" title="Arjun Sharma">
-                                    </div>
-                                    <div class="card-meta">
-                                        <span class="card-priority priority-medium"><i class="fa-solid fa-flag"></i> Medium</span>
-                                        <span class="card-due-date text-warning"><i class="fa-regular fa-calendar"></i> May 24</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Card 2: Wireframes -->
-                            <div class="task-card" draggable="true">
-                                <div class="card-header">
-                                    <span class="card-tag tag-design">Design</span>
-                                    <button class="btn-card-more"><i class="fa-solid fa-ellipsis"></i></button>
-                                </div>
-                                <h4 class="card-title">Wireframes</h4>
-                                <p class="card-desc">Create wireframes for all pages</p>
-                                <div class="card-footer">
-                                    <div class="assignees-group">
-                                        <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=80&h=80&q=80" alt="Priya" title="Priya Singh">
-                                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=80&h=80&q=80" alt="Arjun" title="Arjun Sharma">
-                                    </div>
-                                    <div class="card-meta">
-                                        <span class="card-priority priority-high"><i class="fa-solid fa-flag"></i> High</span>
-                                        <span class="card-due-date text-warning"><i class="fa-regular fa-calendar"></i> May 26</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Card 3: Blog Section -->
-                            <div class="task-card" draggable="true">
-                                <div class="card-header">
-                                    <span class="card-tag tag-development">Development</span>
-                                    <button class="btn-card-more"><i class="fa-solid fa-ellipsis"></i></button>
-                                </div>
-                                <h4 class="card-title">Blog Section</h4>
-                                <p class="card-desc">Design and develop blog section</p>
-                                <div class="card-footer">
-                                    <div class="assignees-group">
-                                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=80&h=80&q=80" alt="Arjun" title="Arjun Sharma">
-                                    </div>
-                                    <div class="card-meta">
-                                        <span class="card-priority priority-medium"><i class="fa-solid fa-flag"></i> Medium</span>
-                                        <span class="card-due-date text-warning"><i class="fa-regular fa-calendar"></i> May 27</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Card 4: Contact Form -->
-                            <div class="task-card" draggable="true">
-                                <div class="card-header">
-                                    <span class="card-tag tag-development">Development</span>
-                                    <button class="btn-card-more"><i class="fa-solid fa-ellipsis"></i></button>
-                                </div>
-                                <h4 class="card-title">Contact Form</h4>
-                                <p class="card-desc">Create contact form and validation</p>
-                                <div class="card-footer">
-                                    <div class="assignees-group">
-                                        <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=80&h=80&q=80" alt="Priya" title="Priya Singh">
-                                    </div>
-                                    <div class="card-meta">
-                                        <span class="card-priority priority-low"><i class="fa-solid fa-flag"></i> Low</span>
-                                        <span class="card-due-date text-warning"><i class="fa-regular fa-calendar"></i> May 29</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-                        <button class="btn-column-add-task"><i class="fa-solid fa-plus"></i> Add Task</button>
-                    </div>
-
-                    <!-- COLUMN: IN PROGRESS (3 tasks) -->
-                    <div class="board-column" data-status="inprogress">
-                        <div class="column-header">
-                            <div class="header-title-wrapper">
-                                <span class="column-indicator indicator-inprogress"></span>
-                                <h3 class="column-title">In Progress</h3>
-                                <span class="task-count-badge">3</span>
-                            </div>
-                            <button class="btn-column-more"><i class="fa-solid fa-ellipsis"></i></button>
-                        </div>
-                        <div class="task-list" id="list-inprogress">
-                            
-                            <!-- Card 1: Homepage Development -->
-                            <div class="task-card" draggable="true">
-                                <div class="card-header">
-                                    <span class="card-tag tag-development">Development</span>
-                                    <button class="btn-card-more"><i class="fa-solid fa-ellipsis"></i></button>
-                                </div>
-                                <h4 class="card-title">Homepage Development</h4>
-                                <p class="card-desc">Develop homepage with responsive design</p>
-                                <div class="card-footer">
-                                    <div class="assignees-group">
-                                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=80&h=80&q=80" alt="Arjun" title="Arjun Sharma">
-                                        <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=80&h=80&q=80" alt="Rohan" title="Rohan Verma">
-                                    </div>
-                                    <div class="card-meta">
-                                        <span class="card-due-date"><i class="fa-regular fa-calendar"></i> May 21</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Card 2: API Integration -->
-                            <div class="task-card" draggable="true">
-                                <div class="card-header">
-                                    <span class="card-tag tag-development">Development</span>
-                                    <button class="btn-card-more"><i class="fa-solid fa-ellipsis"></i></button>
-                                </div>
-                                <h4 class="card-title">API Integration</h4>
-                                <p class="card-desc">Integrate backend APIs for the website</p>
-                                <div class="card-footer">
-                                    <div class="assignees-group">
-                                        <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=80&h=80&q=80" alt="Rohan" title="Rohan Verma">
-                                    </div>
-                                    <div class="card-meta">
-                                        <span class="card-due-date"><i class="fa-regular fa-calendar"></i> May 23</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Card 3: Mobile Responsiveness -->
-                            <div class="task-card" draggable="true">
-                                <div class="card-header">
-                                    <span class="card-tag tag-design">Design</span>
-                                    <button class="btn-card-more"><i class="fa-solid fa-ellipsis"></i></button>
-                                </div>
-                                <h4 class="card-title">Mobile Responsiveness</h4>
-                                <p class="card-desc">Make all pages mobile friendly</p>
-                                <div class="card-footer">
-                                    <div class="assignees-group">
-                                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=80&h=80&q=80" alt="Arjun" title="Arjun Sharma">
-                                    </div>
-                                    <div class="card-meta">
-                                        <span class="card-due-date"><i class="fa-regular fa-calendar"></i> May 25</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-                        <button class="btn-column-add-task"><i class="fa-solid fa-plus"></i> Add Task</button>
-                    </div>
-
-                    <!-- COLUMN: REVIEW (2 tasks) -->
-                    <div class="board-column" data-status="review">
-                        <div class="column-header">
-                            <div class="header-title-wrapper">
-                                <span class="column-indicator indicator-review"></span>
-                                <h3 class="column-title">Review</h3>
-                                <span class="task-count-badge">2</span>
-                            </div>
-                            <button class="btn-column-more"><i class="fa-solid fa-ellipsis"></i></button>
-                        </div>
-                        <div class="task-list" id="list-review">
-                            
-                            <!-- Card 1: Design System -->
-                            <div class="task-card" draggable="true">
-                                <div class="card-header">
-                                    <span class="card-tag tag-design">Design</span>
-                                    <button class="btn-card-more"><i class="fa-solid fa-ellipsis"></i></button>
-                                </div>
-                                <h4 class="card-title">Design System</h4>
-                                <p class="card-desc">Review design system and components</p>
-                                <div class="card-footer">
-                                    <div class="assignees-group">
-                                        <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=80&h=80&q=80" alt="Priya" title="Priya Singh">
-                                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=80&h=80&q=80" alt="Arjun" title="Arjun Sharma">
-                                    </div>
-                                    <div class="card-meta">
-                                        <span class="card-due-date"><i class="fa-regular fa-calendar"></i> May 20</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Card 2: Content Review -->
-                            <div class="task-card" draggable="true">
-                                <div class="card-header">
-                                    <span class="card-tag tag-content">Content</span>
-                                    <button class="btn-card-more"><i class="fa-solid fa-ellipsis"></i></button>
-                                </div>
-                                <h4 class="card-title">Content Review</h4>
-                                <p class="card-desc">Review all content and copy</p>
-                                <div class="card-footer">
-                                    <div class="assignees-group">
-                                        <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=80&h=80&q=80" alt="Sneha" title="Sneha Iyer">
-                                    </div>
-                                    <div class="card-meta">
-                                        <span class="card-due-date"><i class="fa-regular fa-calendar"></i> May 22</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-                        <button class="btn-column-add-task"><i class="fa-solid fa-plus"></i> Add Task</button>
-                    </div>
-
-                    <!-- COLUMN: DONE (4 tasks) -->
-                    <div class="board-column" data-status="done">
-                        <div class="column-header">
-                            <div class="header-title-wrapper">
-                                <span class="column-indicator indicator-done"></span>
-                                <h3 class="column-title">Done</h3>
-                                <span class="task-count-badge">4</span>
-                            </div>
-                            <button class="btn-column-more"><i class="fa-solid fa-ellipsis"></i></button>
-                        </div>
-                        <div class="task-list" id="list-done">
-                            
-                            <!-- Card 1: Project Setup -->
-                            <div class="task-card" draggable="true">
-                                <div class="card-header">
-                                    <span class="card-tag tag-setup">Setup</span>
-                                    <button class="btn-card-more"><i class="fa-solid fa-ellipsis"></i></button>
-                                </div>
-                                <h4 class="card-title">Project Setup</h4>
-                                <p class="card-desc">Initial project setup and configuration</p>
-                                <div class="card-footer">
-                                    <div class="assignees-group">
-                                        <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=80&h=80&q=80" alt="Rohan" title="Rohan Verma">
-                                    </div>
-                                    <div class="card-meta">
-                                        <span class="card-due-date text-success"><i class="fa-regular fa-calendar"></i> May 15</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Card 2: Team Meeting -->
-                            <div class="task-card" draggable="true">
-                                <div class="card-header">
-                                    <span class="card-tag tag-planning">Planning</span>
-                                    <button class="btn-card-more"><i class="fa-solid fa-ellipsis"></i></button>
-                                </div>
-                                <h4 class="card-title">Team Meeting</h4>
-                                <p class="card-desc">Project kickoff meeting</p>
-                                <div class="card-footer">
-                                    <div class="assignees-group">
-                                        <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=80&h=80&q=80" alt="Priya" title="Priya Singh">
-                                        <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=80&h=80&q=80" alt="Rohan" title="Rohan Verma">
-                                    </div>
-                                    <div class="card-meta">
-                                        <span class="card-due-date text-success"><i class="fa-regular fa-calendar"></i> May 16</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Card 3: Requirements Gathering -->
-                            <div class="task-card" draggable="true">
-                                <div class="card-header">
-                                    <span class="card-tag tag-planning">Planning</span>
-                                    <button class="btn-card-more"><i class="fa-solid fa-ellipsis"></i></button>
-                                </div>
-                                <h4 class="card-title">Requirements Gathering</h4>
-                                <p class="card-desc">Gather and document requirements</p>
-                                <div class="card-footer">
-                                    <div class="assignees-group">
-                                        <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=80&h=80&q=80" alt="Sneha" title="Sneha Iyer">
-                                    </div>
-                                    <div class="card-meta">
-                                        <span class="card-due-date text-success"><i class="fa-regular fa-calendar"></i> May 17</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Card 4: Logo Design -->
-                            <div class="task-card" draggable="true">
-                                <div class="card-header">
-                                    <span class="card-tag tag-design">Design</span>
-                                    <button class="btn-card-more"><i class="fa-solid fa-ellipsis"></i></button>
-                                </div>
-                                <h4 class="card-title">Logo Design</h4>
-                                <p class="card-desc">Design new logo for brand</p>
-                                <div class="card-footer">
-                                    <div class="assignees-group">
-                                        <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=80&h=80&q=80" alt="Priya" title="Priya Singh">
-                                    </div>
-                                    <div class="card-meta">
-                                        <span class="card-due-date text-success"><i class="fa-regular fa-calendar"></i> May 18</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-                        <button class="btn-column-add-task"><i class="fa-solid fa-plus"></i> Add Task</button>
-                    </div>
-
+                <!-- Column containers rendered dynamically -->
+                <div class="board-columns-container" id="desktop-board-columns">
+                    <!-- Columns and cards rendered dynamically by JS -->
                 </div>
 
                 <!-- STATISTICS DASHBOARD PANEL -->
-                <div class="stats-panel">
-                    
-                    <!-- Card 1: Total Tasks -->
-                    <div class="stat-card">
-                        <div class="stat-icon-wrapper total-tasks-icon">
-                            <i class="fa-solid fa-square-poll-horizontal"></i>
-                        </div>
-                        <div class="stat-info">
-                            <span class="stat-label">Total Tasks</span>
-                            <div class="stat-value-row">
-                                <h3 class="stat-value">18</h3>
-                                <span class="stat-trend trend-up"><i class="fa-solid fa-arrow-up"></i> 12% <span class="trend-sub">from last week</span></span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Card 2: In Progress -->
-                    <div class="stat-card">
-                        <div class="stat-icon-wrapper in-progress-icon">
-                            <i class="fa-solid fa-circle-notch fa-spin"></i>
-                        </div>
-                        <div class="stat-info">
-                            <span class="stat-label">In Progress</span>
-                            <div class="stat-value-row">
-                                <h3 class="stat-value">3</h3>
-                                <span class="stat-trend trend-up"><i class="fa-solid fa-arrow-up"></i> 8% <span class="trend-sub">from last week</span></span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Card 3: Completed -->
-                    <div class="stat-card">
-                        <div class="stat-icon-wrapper completed-icon">
-                            <i class="fa-solid fa-circle-check"></i>
-                        </div>
-                        <div class="stat-info">
-                            <span class="stat-label">Completed</span>
-                            <div class="stat-value-row">
-                                <h3 class="stat-value">7</h3>
-                                <span class="stat-trend trend-up"><i class="fa-solid fa-arrow-up"></i> 16% <span class="trend-sub">from last week</span></span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Card 4: Overdue -->
-                    <div class="stat-card">
-                        <div class="stat-icon-wrapper overdue-icon">
-                            <i class="fa-solid fa-clock"></i>
-                        </div>
-                        <div class="stat-info">
-                            <span class="stat-label">Overdue</span>
-                            <div class="stat-value-row">
-                                <h3 class="stat-value">2</h3>
-                                <span class="stat-trend trend-down"><i class="fa-solid fa-arrow-down"></i> 5% <span class="trend-sub">from last week</span></span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Card 5: Project Progress -->
-                    <div class="stat-card stat-progress-card">
-                        <div class="progress-circle-wrapper">
-                            <svg class="radial-progress-svg" viewBox="0 0 36 36">
-                                <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-                                <path class="circle" stroke-dasharray="68, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-                                <text x="18" y="20.35" class="percentage">68%</text>
-                            </svg>
-                        </div>
-                        <div class="stat-info">
-                            <span class="stat-label">Project Progress</span>
-                            <div class="stat-value-row">
-                                <h3 class="stat-value">68%</h3>
-                                <span class="stat-trend trend-up"><i class="fa-solid fa-arrow-up"></i> 12% <span class="trend-sub">from last week</span></span>
-                            </div>
-                        </div>
-                    </div>
-
+                <div class="stats-panel" id="desktop-stats-panel">
+                    <!-- Stats cards rendered dynamically by JS -->
                 </div>
             </main>
 
@@ -684,64 +146,8 @@
 
                 <div class="activity-section">
                     <span class="activity-date-heading">Today</span>
-                    
-                    <ul class="activity-list-container">
-                        
-                        <!-- Activity 1: Arjun Sharma -->
-                        <li class="activity-item">
-                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=80&h=80&q=80" alt="Arjun" class="activity-user-avatar">
-                            <div class="activity-details">
-                                <p class="activity-text">
-                                    <span class="act-name">Arjun Sharma</span> moved <span class="act-target">“Homepage Development”</span> to <span class="act-status">In Progress</span>
-                                </p>
-                                <span class="activity-time">2 min ago</span>
-                            </div>
-                        </li>
-
-                        <!-- Activity 2: Priya Singh -->
-                        <li class="activity-item">
-                            <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=80&h=80&q=80" alt="Priya" class="activity-user-avatar">
-                            <div class="activity-details">
-                                <p class="activity-text">
-                                    <span class="act-name">Priya Singh</span> assigned task <span class="act-target">“Blog Section”</span> to <span class="act-bold">Rohan Verma</span>
-                                </p>
-                                <span class="activity-time">15 min ago</span>
-                            </div>
-                        </li>
-
-                        <!-- Activity 3: Rohan Verma -->
-                        <li class="activity-item">
-                            <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=80&h=80&q=80" alt="Rohan" class="activity-user-avatar">
-                            <div class="activity-details">
-                                <p class="activity-text">
-                                    <span class="act-name">Rohan Verma</span> updated due date for <span class="act-target">“Mobile Responsiveness”</span>
-                                </p>
-                                <span class="activity-time">1 hour ago</span>
-                            </div>
-                        </li>
-
-                        <!-- Activity 4: Sneha Iyer -->
-                        <li class="activity-item">
-                            <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=80&h=80&q=80" alt="Sneha" class="activity-user-avatar">
-                            <div class="activity-details">
-                                <p class="activity-text">
-                                    <span class="act-name">Sneha Iyer</span> moved <span class="act-target">“Contact Form”</span> from To Do to <span class="act-status">In Progress</span>
-                                </p>
-                                <span class="activity-time">2 hours ago</span>
-                            </div>
-                        </li>
-
-                        <!-- Activity 5: Ankit Patel -->
-                        <li class="activity-item">
-                            <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=80&h=80&q=80" alt="Ankit" class="activity-user-avatar">
-                            <div class="activity-details">
-                                <p class="activity-text">
-                                    <span class="act-name">Ankit Patel</span> completed <span class="act-target">“Project Setup”</span> task
-                                </p>
-                                <span class="activity-time">3 hours ago</span>
-                            </div>
-                        </li>
-
+                    <ul class="activity-list-container" id="desktop-activity-list">
+                        <!-- Activity entries rendered dynamically by JS -->
                     </ul>
                 </div>
 
@@ -780,43 +186,8 @@
         </header>
 
         <!-- MOBILE COLUMNS HORIZONTAL TABS SWITCHER -->
-        <div class="mobile-columns-tabs-bar">
-            
-            <!-- Tab: Backlog -->
-            <div class="mobile-column-tab" data-target="backlog">
-                <div class="tab-icon bg-backlog"><i class="fa-solid fa-briefcase"></i></div>
-                <span class="tab-name">Backlog</span>
-                <span class="tab-badge badge-backlog">5</span>
-            </div>
-
-            <!-- Tab: To Do (Active in mockup) -->
-            <div class="mobile-column-tab active" data-target="todo">
-                <div class="tab-icon bg-todo"><i class="fa-solid fa-inbox"></i></div>
-                <span class="tab-name">To Do</span>
-                <span class="tab-badge badge-todo">4</span>
-            </div>
-
-            <!-- Tab: In Progress -->
-            <div class="mobile-column-tab" data-target="inprogress">
-                <div class="tab-icon bg-inprogress"><i class="fa-solid fa-circle-notch"></i></div>
-                <span class="tab-name">In Progress</span>
-                <span class="tab-badge badge-inprogress">3</span>
-            </div>
-
-            <!-- Tab: Review -->
-            <div class="mobile-column-tab" data-target="review">
-                <div class="tab-icon bg-review"><i class="fa-solid fa-award"></i></div>
-                <span class="tab-name">Review</span>
-                <span class="tab-badge badge-review">2</span>
-            </div>
-
-            <!-- Tab: Done -->
-            <div class="mobile-column-tab" data-target="done">
-                <div class="tab-icon bg-done"><i class="fa-solid fa-circle-check"></i></div>
-                <span class="tab-name">Done</span>
-                <span class="tab-badge badge-done">4</span>
-            </div>
-
+        <div class="mobile-columns-tabs-bar" id="mobile-tabs-bar">
+            <!-- Tabs rendered dynamically by JS -->
         </div>
 
         <!-- MOBILE MAIN BOARD WORKSPACE -->
@@ -832,348 +203,8 @@
             </div>
 
             <!-- Mobile Column List Contents -->
-            <div class="mobile-lists-container">
-                
-                <!-- MOBILE BACKLOG LIST -->
-                <div class="mobile-task-list" id="mobile-list-backlog" style="display: none;">
-                    
-                    <div class="task-card">
-                        <div class="card-header">
-                            <span class="card-tag tag-research">Research</span>
-                            <button class="btn-card-more"><i class="fa-solid fa-ellipsis"></i></button>
-                        </div>
-                        <h4 class="card-title">Market Research</h4>
-                        <p class="card-desc">Analyze competitors and market trends</p>
-                        <div class="card-footer">
-                            <div class="assignees-group">
-                                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=80&h=80&q=80" alt="Arjun">
-                                <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=80&h=80&q=80" alt="Priya">
-                            </div>
-                            <div class="card-meta">
-                                <span class="card-due-date"><i class="fa-regular fa-calendar"></i> May 28</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="task-card">
-                        <div class="card-header">
-                            <span class="card-tag tag-design">Design</span>
-                            <button class="btn-card-more"><i class="fa-solid fa-ellipsis"></i></button>
-                        </div>
-                        <h4 class="card-title">Brand Guidelines</h4>
-                        <p class="card-desc">Create brand identity guidelines</p>
-                        <div class="card-footer">
-                            <div class="assignees-group">
-                                <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=80&h=80&q=80" alt="Priya">
-                            </div>
-                            <div class="card-meta">
-                                <span class="card-due-date"><i class="fa-regular fa-calendar"></i> May 30</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="task-card">
-                        <div class="card-header">
-                            <span class="card-tag tag-marketing">Marketing</span>
-                            <button class="btn-card-more"><i class="fa-solid fa-ellipsis"></i></button>
-                        </div>
-                        <h4 class="card-title">Content Strategy</h4>
-                        <p class="card-desc">Define content plan for the website</p>
-                        <div class="card-footer">
-                            <div class="assignees-group">
-                                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=80&h=80&q=80" alt="Arjun">
-                            </div>
-                            <div class="card-meta">
-                                <span class="card-due-date"><i class="fa-regular fa-calendar"></i> Jun 02</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="task-card">
-                        <div class="card-header">
-                            <span class="card-tag tag-seo">SEO</span>
-                            <button class="btn-card-more"><i class="fa-solid fa-ellipsis"></i></button>
-                        </div>
-                        <h4 class="card-title">SEO Audit</h4>
-                        <p class="card-desc">Audit current website and SEO issues</p>
-                        <div class="card-footer">
-                            <div class="assignees-group">
-                                <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=80&h=80&q=80" alt="Rohan">
-                            </div>
-                            <div class="card-meta">
-                                <span class="card-due-date"><i class="fa-regular fa-calendar"></i> Jun 04</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="task-card">
-                        <div class="card-header">
-                            <span class="card-tag tag-research">Research</span>
-                            <button class="btn-card-more"><i class="fa-solid fa-ellipsis"></i></button>
-                        </div>
-                        <h4 class="card-title">Competitor Analysis</h4>
-                        <p class="card-desc">Gather feature lists of main competitors</p>
-                        <div class="card-footer">
-                            <div class="assignees-group">
-                                <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=80&h=80&q=80" alt="Rohan">
-                            </div>
-                            <div class="card-meta">
-                                <span class="card-due-date"><i class="fa-regular fa-calendar"></i> Jun 05</span>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-
-                <!-- MOBILE TO DO LIST (Shown by default) -->
-                <div class="mobile-task-list" id="mobile-list-todo">
-                    
-                    <div class="task-card">
-                        <div class="card-header">
-                            <span class="card-tag tag-design">Design</span>
-                            <button class="btn-card-more"><i class="fa-solid fa-ellipsis"></i></button>
-                        </div>
-                        <h4 class="card-title">Landing Page Design</h4>
-                        <p class="card-desc">Design the new landing page</p>
-                        <div class="card-footer">
-                            <div class="assignees-group">
-                                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=80&h=80&q=80" alt="Arjun">
-                            </div>
-                            <div class="card-meta">
-                                <span class="card-priority priority-medium"><i class="fa-solid fa-flag"></i> Medium</span>
-                                <span class="card-due-date text-warning"><i class="fa-regular fa-calendar"></i> May 24</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="task-card">
-                        <div class="card-header">
-                            <span class="card-tag tag-design">Design</span>
-                            <button class="btn-card-more"><i class="fa-solid fa-ellipsis"></i></button>
-                        </div>
-                        <h4 class="card-title">Wireframes</h4>
-                        <p class="card-desc">Create wireframes for all pages</p>
-                        <div class="card-footer">
-                            <div class="assignees-group">
-                                <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=80&h=80&q=80" alt="Priya">
-                                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=80&h=80&q=80" alt="Arjun">
-                            </div>
-                            <div class="card-meta">
-                                <span class="card-priority priority-high"><i class="fa-solid fa-flag"></i> High</span>
-                                <span class="card-due-date text-warning"><i class="fa-regular fa-calendar"></i> May 26</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="task-card">
-                        <div class="card-header">
-                            <span class="card-tag tag-development">Development</span>
-                            <button class="btn-card-more"><i class="fa-solid fa-ellipsis"></i></button>
-                        </div>
-                        <h4 class="card-title">Blog Section</h4>
-                        <p class="card-desc">Design and develop blog section</p>
-                        <div class="card-footer">
-                            <div class="assignees-group">
-                                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=80&h=80&q=80" alt="Arjun">
-                            </div>
-                            <div class="card-meta">
-                                <span class="card-priority priority-medium"><i class="fa-solid fa-flag"></i> Medium</span>
-                                <span class="card-due-date text-warning"><i class="fa-regular fa-calendar"></i> May 27</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="task-card">
-                        <div class="card-header">
-                            <span class="card-tag tag-development">Development</span>
-                            <button class="btn-card-more"><i class="fa-solid fa-ellipsis"></i></button>
-                        </div>
-                        <h4 class="card-title">Contact Form</h4>
-                        <p class="card-desc">Create contact form and validation</p>
-                        <div class="card-footer">
-                            <div class="assignees-group">
-                                <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=80&h=80&q=80" alt="Priya">
-                            </div>
-                            <div class="card-meta">
-                                <span class="card-priority priority-low"><i class="fa-solid fa-flag"></i> Low</span>
-                                <span class="card-due-date text-warning"><i class="fa-regular fa-calendar"></i> May 29</span>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-
-                <!-- MOBILE IN PROGRESS LIST -->
-                <div class="mobile-task-list" id="mobile-list-inprogress" style="display: none;">
-                    
-                    <div class="task-card">
-                        <div class="card-header">
-                            <span class="card-tag tag-development">Development</span>
-                            <button class="btn-card-more"><i class="fa-solid fa-ellipsis"></i></button>
-                        </div>
-                        <h4 class="card-title">Homepage Development</h4>
-                        <p class="card-desc">Develop homepage with responsive design</p>
-                        <div class="card-footer">
-                            <div class="assignees-group">
-                                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=80&h=80&q=80" alt="Arjun">
-                                <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=80&h=80&q=80" alt="Rohan">
-                            </div>
-                            <div class="card-meta">
-                                <span class="card-due-date"><i class="fa-regular fa-calendar"></i> May 21</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="task-card">
-                        <div class="card-header">
-                            <span class="card-tag tag-development">Development</span>
-                            <button class="btn-card-more"><i class="fa-solid fa-ellipsis"></i></button>
-                        </div>
-                        <h4 class="card-title">API Integration</h4>
-                        <p class="card-desc">Integrate backend APIs for the website</p>
-                        <div class="card-footer">
-                            <div class="assignees-group">
-                                <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=80&h=80&q=80" alt="Rohan">
-                            </div>
-                            <div class="card-meta">
-                                <span class="card-due-date"><i class="fa-regular fa-calendar"></i> May 23</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="task-card">
-                        <div class="card-header">
-                            <span class="card-tag tag-design">Design</span>
-                            <button class="btn-card-more"><i class="fa-solid fa-ellipsis"></i></button>
-                        </div>
-                        <h4 class="card-title">Mobile Responsiveness</h4>
-                        <p class="card-desc">Make all pages mobile friendly</p>
-                        <div class="card-footer">
-                            <div class="assignees-group">
-                                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=80&h=80&q=80" alt="Arjun">
-                            </div>
-                            <div class="card-meta">
-                                <span class="card-due-date"><i class="fa-regular fa-calendar"></i> May 25</span>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-
-                <!-- MOBILE REVIEW LIST -->
-                <div class="mobile-task-list" id="mobile-list-review" style="display: none;">
-                    
-                    <div class="task-card">
-                        <div class="card-header">
-                            <span class="card-tag tag-design">Design</span>
-                            <button class="btn-card-more"><i class="fa-solid fa-ellipsis"></i></button>
-                        </div>
-                        <h4 class="card-title">Design System</h4>
-                        <p class="card-desc">Review design system and components</p>
-                        <div class="card-footer">
-                            <div class="assignees-group">
-                                <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=80&h=80&q=80" alt="Priya">
-                                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=80&h=80&q=80" alt="Arjun">
-                            </div>
-                            <div class="card-meta">
-                                <span class="card-due-date"><i class="fa-regular fa-calendar"></i> May 20</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="task-card">
-                        <div class="card-header">
-                            <span class="card-tag tag-content">Content</span>
-                            <button class="btn-card-more"><i class="fa-solid fa-ellipsis"></i></button>
-                        </div>
-                        <h4 class="card-title">Content Review</h4>
-                        <p class="card-desc">Review all content and copy</p>
-                        <div class="card-footer">
-                            <div class="assignees-group">
-                                <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=80&h=80&q=80" alt="Sneha">
-                            </div>
-                            <div class="card-meta">
-                                <span class="card-due-date"><i class="fa-regular fa-calendar"></i> May 22</span>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-
-                <!-- MOBILE DONE LIST -->
-                <div class="mobile-task-list" id="mobile-list-done" style="display: none;">
-                    
-                    <div class="task-card">
-                        <div class="card-header">
-                            <span class="card-tag tag-setup">Setup</span>
-                            <button class="btn-card-more"><i class="fa-solid fa-ellipsis"></i></button>
-                        </div>
-                        <h4 class="card-title">Project Setup</h4>
-                        <p class="card-desc">Initial project setup and configuration</p>
-                        <div class="card-footer">
-                            <div class="assignees-group">
-                                <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=80&h=80&q=80" alt="Rohan">
-                            </div>
-                            <div class="card-meta">
-                                <span class="card-due-date text-success"><i class="fa-regular fa-calendar"></i> May 15</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="task-card">
-                        <div class="card-header">
-                            <span class="card-tag tag-planning">Planning</span>
-                            <button class="btn-card-more"><i class="fa-solid fa-ellipsis"></i></button>
-                        </div>
-                        <h4 class="card-title">Team Meeting</h4>
-                        <p class="card-desc">Project kickoff meeting</p>
-                        <div class="card-footer">
-                            <div class="assignees-group">
-                                <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=80&h=80&q=80" alt="Priya">
-                                <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=80&h=80&q=80" alt="Rohan">
-                            </div>
-                            <div class="card-meta">
-                                <span class="card-due-date text-success"><i class="fa-regular fa-calendar"></i> May 16</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="task-card">
-                        <div class="card-header">
-                            <span class="card-tag tag-planning">Planning</span>
-                            <button class="btn-card-more"><i class="fa-solid fa-ellipsis"></i></button>
-                        </div>
-                        <h4 class="card-title">Requirements Gathering</h4>
-                        <p class="card-desc">Gather and document requirements</p>
-                        <div class="card-footer">
-                            <div class="assignees-group">
-                                <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=80&h=80&q=80" alt="Sneha">
-                            </div>
-                            <div class="card-meta">
-                                <span class="card-due-date text-success"><i class="fa-regular fa-calendar"></i> May 17</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="task-card">
-                        <div class="card-header">
-                            <span class="card-tag tag-design">Design</span>
-                            <button class="btn-card-more"><i class="fa-solid fa-ellipsis"></i></button>
-                        </div>
-                        <h4 class="card-title">Logo Design</h4>
-                        <p class="card-desc">Design new logo for brand</p>
-                        <div class="card-footer">
-                            <div class="assignees-group">
-                                <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=80&h=80&q=80" alt="Priya">
-                            </div>
-                            <div class="card-meta">
-                                <span class="card-due-date text-success"><i class="fa-regular fa-calendar"></i> May 18</span>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-
+            <div class="mobile-lists-container" id="mobile-lists-container">
+                <!-- Task list for currently selected column rendered dynamically by JS -->
             </div>
 
             <!-- Swipe visual helper indicator -->
@@ -1187,20 +218,8 @@
                     <span class="mobile-act-header-title">Recent Activity</span>
                     <a href="#" class="mobile-view-all-link">View All</a>
                 </div>
-                <div class="mobile-activity-card">
-                    <div class="mobile-act-icon-box">
-                        <i class="fa-solid fa-arrow-right"></i>
-                    </div>
-                    <div class="mobile-act-body">
-                        <p class="mobile-act-text">
-                            <span class="bold">Arjun Sharma</span> moved “Homepage Development” to <span class="status-blue">In Progress</span>
-                        </p>
-                        <span class="mobile-act-time">2 min ago</span>
-                    </div>
-                    <div class="mobile-act-avatar">
-                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=80&h=80&q=80" alt="Arjun">
-                        <span class="mobile-act-dot"></span>
-                    </div>
+                <div class="mobile-activity-card" id="mobile-recent-activity-card">
+                    <!-- Recent action rendered dynamically by JS -->
                 </div>
             </div>
 
@@ -1208,34 +227,27 @@
 
         <!-- MOBILE BOTTOM NAVIGATION BAR -->
         <nav class="mobile-bottom-nav">
-            
             <a href="#" class="mobile-nav-btn active">
                 <i class="fa-solid fa-square-poll-vertical"></i>
                 <span>Board</span>
             </a>
-            
             <a href="#" class="mobile-nav-btn">
                 <i class="fa-solid fa-circle-check"></i>
                 <span>My Tasks</span>
             </a>
-            
             <!-- Large floating action button -->
             <div class="mobile-floating-btn btn-add-task-trigger">
                 <i class="fa-solid fa-plus"></i>
             </div>
-
             <a href="#" class="mobile-nav-btn">
                 <i class="fa-solid fa-chart-line"></i>
                 <span>Activity</span>
             </a>
-
             <a href="#" class="mobile-nav-btn">
                 <i class="fa-solid fa-ellipsis"></i>
                 <span>More</span>
             </a>
-
         </nav>
-
     </div>
 
     <!-- ADD TASK MODAL OVERLAY -->
@@ -1246,7 +258,6 @@
                 <button class="btn-modal-close" id="btn-close-modal"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <form class="modal-form" id="add-task-form">
-                
                 <!-- Input: Task Title -->
                 <div class="form-group">
                     <label for="task-title-input">Task Title *</label>
@@ -1266,11 +277,7 @@
                         <label for="task-assignee">Assignee</label>
                         <select id="task-assignee">
                             <option value="">Unassigned</option>
-                            <option value="arjun">Arjun Sharma (Admin)</option>
-                            <option value="priya">Priya Singh (Designer)</option>
-                            <option value="rohan">Rohan Verma (Developer)</option>
-                            <option value="sneha">Sneha Iyer (Developer)</option>
-                            <option value="ankit">Ankit Patel (Tester)</option>
+                            <!-- Member options will be populated dynamically -->
                         </select>
                     </div>
 
