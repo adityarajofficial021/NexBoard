@@ -601,6 +601,7 @@ body {
     margin-bottom: 12px;
     padding-right: 2px;
     flex: 1;
+    min-height: 200px; 
 }
 
 /* Hide native scrollbars on the list for maximum cleanliness */

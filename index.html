@@ -40,7 +40,50 @@
 
             <!-- Right user & control section -->
             <div class="header-right">
-                <button class="btn-filter"><i class="fa-solid fa-sliders"></i> Filters</button>
+                
+                <!-- Filter Menu Dropdown Wrapper Container -->
+                <div class="filter-dropdown-container" style="position: relative; display: inline-block;">
+                    <button class="btn-filter"><i class="fa-solid fa-sliders"></i> Filters</button>
+                    
+                    <!-- Interactive Multi-Parameter Filter Overlay Panel -->
+                    <div class="filter-options-panel" id="filter-panel" style="display: none; position: absolute; top: 45px; right: 0; background: white; border: 1px solid var(--border-subtle); padding: 16px; border-radius: var(--radius-md); box-shadow: var(--shadow-lg); z-index: 200; width: 260px; color: var(--text-main); flex-direction: column; gap: 12px;">
+                        <h4 style="font-size: 0.85rem; font-weight: 700; border-bottom: 1px solid var(--border-subtle); padding-bottom: 6px; margin: 0;">Filter Workspace</h4>
+                        
+                        <!-- Dropdown: Assignee -->
+                        <div style="display: flex; flex-direction: column; gap: 4px;">
+                            <label style="font-size: 0.75rem; font-weight: 600; color: var(--text-muted);">Assignee</label>
+                            <select id="filter-assignee" style="padding: 6px; font-size: 0.8rem; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle); width: 100%;">
+                                <option value="">All Assignees</option>
+                            </select>
+                        </div>
+
+                        <!-- Dropdown: Priority -->
+                        <div style="display: flex; flex-direction: column; gap: 4px;">
+                            <label style="font-size: 0.75rem; font-weight: 600; color: var(--text-muted);">Priority</label>
+                            <select id="filter-priority" style="padding: 6px; font-size: 0.8rem; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle); width: 100%;">
+                                <option value="">All Priorities</option>
+                                <option value="High">High</option>
+                                <option value="Medium">Medium</option>
+                                <option value="Low">Low</option>
+                            </select>
+                        </div>
+
+                        <!-- Dropdown: Due Status -->
+                        <div style="display: flex; flex-direction: column; gap: 4px;">
+                            <label style="font-size: 0.75rem; font-weight: 600; color: var(--text-muted);">Due Status</label>
+                            <select id="filter-due" style="padding: 6px; font-size: 0.8rem; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle); width: 100%;">
+                                <option value="">All Statuses</option>
+                                <option value="overdue">Overdue</option>
+                                <option value="today">Due Today</option>
+                                <option value="upcoming">Upcoming</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Reset Button -->
+                        <button id="btn-reset-filters" style="background: var(--bg-main); border: none; padding: 6px; border-radius: var(--radius-sm); font-size: 0.78rem; font-weight: 600; cursor: pointer; color: var(--text-muted); width: 100%;">Clear Filters</button>
+                    </div>
+                </div>
+
                 <div class="group-selector">
                     <span>Group: None</span>
                     <i class="fa-solid fa-chevron-down"></i>
@@ -308,6 +351,6 @@
     </div>
 
     <!-- Link to external application script -->
-    <script src="js/app.js"></script>
+   <script type="module" src="js/app.js"></script>
 </body>
 </html>
