@@ -4,7 +4,7 @@
 import { initDragAndDrop } from './modules/dragDrop.js';
 import { initFilteringSystem, currentFilters, applyActiveFilters } from './modules/filter.js';
 // Import central raw data store arrays and helpers
-import { projects, members, tasks, activities, deleteTask, saveState, addActivity } from './modules/state.js';
+import { projects, members, tasks, activities, deleteTask, saveState, addActivity, addMember, addProject } from './modules/state.js';
 
 // Import UI component builders
 import { renderDesktopBoard, renderStats } from './components/board.js';
@@ -32,6 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 3. Bind Global Interactivity Actions
     initGlobalInteractivity();
     initModalEventListeners();
+    initMemberAndProjectModals();
     initFilteringSystem();
     initKeyboardShortcuts();
     
@@ -41,7 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
 /**
  * Renders the project categories list inside the left sidebar drawer
  */
-function renderSidebarProjects() {
+export function renderSidebarProjects() {
     const projectListContainer = document.getElementById('desktop-project-list');
     if (!projectListContainer) return;
 
@@ -67,7 +68,7 @@ function renderSidebarProjects() {
 /**
  * Renders the team directory information profiles within the left sidebar
  */
-function renderSidebarTeam() {
+export function renderSidebarTeam() {
     const teamListContainer = document.getElementById('desktop-team-list');
     if (!teamListContainer) return;
 
@@ -101,7 +102,7 @@ function renderSidebarTeam() {
 /**
  * Dynamically builds user profile dropdown selection choices inside the task modal form
  */
-function renderAssigneeFormOptions() {
+export function renderAssigneeFormOptions() {
     const assigneeSelectInput = document.getElementById('task-assignee');
     if (!assigneeSelectInput) return;
 
@@ -114,7 +115,7 @@ function renderAssigneeFormOptions() {
 /**
  * Populates assignee choices inside the header filter dropdown panel
  */
-function renderFilterAssigneeOptions() {
+export function renderFilterAssigneeOptions() {
     const filterAssigneeInput = document.getElementById('filter-assignee');
     if (!filterAssigneeInput) return;
 
@@ -205,7 +206,73 @@ function initKeyboardShortcuts() {
 }
 
 /**
- * Orchestrates form behaviors, handling opening overlays, setting constraints, and closing visibility toggles
+ * Dynamic Add Member and Add Project Modals initialization
+ */
+function initMemberAndProjectModals() {
+    const addMemberModal = document.getElementById('add-member-modal');
+    const closeMemberBtn = document.getElementById('btn-close-member-modal');
+    const cancelMemberBtn = document.getElementById('btn-cancel-member-modal');
+    const addMemberForm = document.getElementById('add-member-form');
+
+    const addProjectModal = document.getElementById('add-project-modal');
+    const closeProjectBtn = document.getElementById('btn-close-project-modal');
+    const cancelProjectBtn = document.getElementById('btn-cancel-project-modal');
+    const addProjectForm = document.getElementById('add-project-form');
+
+    // Click hooks to trigger Invite / Add Team Member
+    const inviteBtn = document.querySelector('.btn-invite-members');
+    const teamAddBtn = document.querySelectorAll('.sidebar-section')[1]?.querySelector('.btn-section-add');
+
+    if (inviteBtn) inviteBtn.addEventListener('click', () => addMemberModal?.classList.add('active'));
+    if (teamAddBtn) teamAddBtn.addEventListener('click', () => addMemberModal?.classList.add('active'));
+    if (closeMemberBtn) closeMemberBtn.addEventListener('click', () => addMemberModal?.classList.remove('active'));
+    if (cancelMemberBtn) cancelMemberBtn.addEventListener('click', () => addMemberModal?.classList.remove('active'));
+
+    if (addMemberForm) {
+        addMemberForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const nameVal = document.getElementById('member-name-input')?.value.trim();
+            const roleVal = document.getElementById('member-role-input')?.value.trim();
+            
+            if (nameVal && roleVal) {
+                addMember(nameVal, roleVal);
+                renderSidebarTeam();
+                renderAssigneeFormOptions();
+                renderFilterAssigneeOptions();
+                renderDesktopActivities();
+                renderMobileBoard();
+                addMemberForm.reset();
+                addMemberModal?.classList.remove('active');
+            }
+        });
+    }
+
+    // Click hooks to trigger Create Project
+    const projAddBtn = document.querySelectorAll('.sidebar-section')[0]?.querySelector('.btn-section-add');
+    if (projAddBtn) projAddBtn.addEventListener('click', () => addProjectModal?.classList.add('active'));
+    if (closeProjectBtn) closeProjectBtn.addEventListener('click', () => addProjectModal?.classList.remove('active'));
+    if (cancelProjectBtn) cancelProjectBtn.addEventListener('click', () => addProjectModal?.classList.remove('active'));
+
+    if (addProjectForm) {
+        addProjectForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const nameVal = document.getElementById('project-name-input')?.value.trim();
+            const colorVal = document.getElementById('project-color-select')?.value;
+            
+            if (nameVal) {
+                const newProj = addProject(nameVal, colorVal);
+                renderSidebarProjects();
+                const headerTitle = document.getElementById('desktop-project-title');
+                if (headerTitle) headerTitle.textContent = newProj.name;
+                addProjectForm.reset();
+                addProjectModal?.classList.remove('active');
+            }
+        });
+    }
+}
+
+/**
+ * Orchestrates task modal form behaviors
  */
 function initModalEventListeners() {
     const taskModalOverlay = document.getElementById('add-task-modal');

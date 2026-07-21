@@ -1,13 +1,13 @@
 // Central Data Store for NexBoard with LocalStorage Persistence
 
-export const projects = [
+const defaultProjects = [
     { id: 'redesign', name: 'Website Redesign', color: 'redesign', active: true },
     { id: 'mobile', name: 'Mobile App', color: 'mobile', active: false },
     { id: 'marketing', name: 'Marketing Campaign', color: 'marketing', active: false },
     { id: 'launch', name: 'Product Launch', color: 'launch', active: false }
 ];
 
-export const members = {
+const defaultMembers = {
     arjun: { name: 'Arjun Sharma', role: 'Admin', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=80&h=80&q=80', status: 'online' },
     priya: { name: 'Priya Singh', role: 'Designer', avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=80&h=80&q=80', status: 'online' },
     rohan: { name: 'Rohan Verma', role: 'Developer', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=80&h=80&q=80', status: 'online' },
@@ -53,6 +53,24 @@ const defaultActivities = [
 ];
 
 // Load initial arrays from LocalStorage if available
+function loadProjects() {
+    try {
+        const saved = localStorage.getItem('nexboard_projects');
+        return saved ? JSON.parse(saved) : defaultProjects;
+    } catch(e) {
+        return defaultProjects;
+    }
+}
+
+function loadMembers() {
+    try {
+        const saved = localStorage.getItem('nexboard_members');
+        return saved ? JSON.parse(saved) : defaultMembers;
+    } catch(e) {
+        return defaultMembers;
+    }
+}
+
 function loadTasks() {
     try {
         const saved = localStorage.getItem('nexboard_tasks');
@@ -71,17 +89,56 @@ function loadActivities() {
     }
 }
 
+export let projects = loadProjects();
+export let members = loadMembers();
 export let tasks = loadTasks();
 export let activities = loadActivities();
 
 // Save state changes to LocalStorage
 export function saveState() {
     try {
+        localStorage.setItem('nexboard_projects', JSON.stringify(projects));
+        localStorage.setItem('nexboard_members', JSON.stringify(members));
         localStorage.setItem('nexboard_tasks', JSON.stringify(tasks));
         localStorage.setItem('nexboard_activities', JSON.stringify(activities));
     } catch(e) {
         console.error('Failed to save to localStorage:', e);
     }
+}
+
+// Dynamic Member Addition Helper
+export function addMember(name, role) {
+    const id = name.toLowerCase().replace(/[^a-z0-9]/g, '');
+    const avatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=random&color=fff&bold=true`;
+    
+    members[id] = {
+        name: name,
+        role: role,
+        avatar: avatar,
+        status: 'online'
+    };
+    
+    addActivity('added team member', `“${name}”`, `as ${role}`, 'fa-user-plus');
+    saveState();
+    return id;
+}
+
+// Dynamic Project Addition Helper
+export function addProject(name, color = 'redesign') {
+    const id = name.toLowerCase().replace(/[^a-z0-9]/g, '');
+    projects.forEach(p => p.active = false);
+    
+    const newProj = {
+        id: id,
+        name: name,
+        color: color,
+        active: true
+    };
+    
+    projects.push(newProj);
+    addActivity('created new project', `“${name}”`, '', 'fa-folder-plus');
+    saveState();
+    return newProj;
 }
 
 // State Mutation Helpers
