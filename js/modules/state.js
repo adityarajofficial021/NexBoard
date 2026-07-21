@@ -1,13 +1,31 @@
-// Central Data Store for NexBoard with LocalStorage Persistence
+// Central Data Store for NexBoard with Fresh Start & Demo Loaders
 
-const defaultProjects = [
+// Fresh Default Workspace for New Users
+const freshProjects = [
+    { id: 'redesign', name: 'My Workspace', color: 'redesign', active: true }
+];
+
+const freshMembers = {
+    admin: { name: 'Admin', role: 'Owner', avatar: 'https://ui-avatars.com/api/?name=Admin&background=0d9488&color=fff&bold=true', status: 'online' }
+};
+
+const freshTasks = [
+    { id: 1, title: 'Welcome to NexBoard! 🎉', desc: 'Click + Add Task to create your first task or invite team members from the left sidebar.', tag: 'setup', assignees: ['admin'], date: 'Today', status: 'todo', priority: 'High' }
+];
+
+const freshActivities = [
+    { id: 1, userId: 'admin', action: 'created workspace', target: '“My Workspace”', extra: '', time: 'Just now', icon: 'fa-square-check' }
+];
+
+// Rich Sample Demo Data
+const demoProjects = [
     { id: 'redesign', name: 'Website Redesign', color: 'redesign', active: true },
     { id: 'mobile', name: 'Mobile App', color: 'mobile', active: false },
     { id: 'marketing', name: 'Marketing Campaign', color: 'marketing', active: false },
     { id: 'launch', name: 'Product Launch', color: 'launch', active: false }
 ];
 
-const defaultMembers = {
+const demoMembers = {
     arjun: { name: 'Arjun Sharma', role: 'Admin', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=80&h=80&q=80', status: 'online' },
     priya: { name: 'Priya Singh', role: 'Designer', avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=80&h=80&q=80', status: 'online' },
     rohan: { name: 'Rohan Verma', role: 'Developer', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=80&h=80&q=80', status: 'online' },
@@ -23,7 +41,7 @@ export const columns = [
     { id: 'done', name: 'Done', icon: 'fa-circle-check', class: 'bg-done', indicator: 'indicator-done' }
 ];
 
-const defaultTasks = [
+const demoTasks = [
     { id: 1, title: 'Market Research', desc: 'Analyze competitors and market trends', tag: 'research', assignees: ['arjun', 'priya'], date: 'May 28', status: 'backlog', priority: '' },
     { id: 2, title: 'Brand Guidelines', desc: 'Create brand identity guidelines', tag: 'design', assignees: ['priya'], date: 'May 30', status: 'backlog', priority: '' },
     { id: 3, title: 'Content Strategy', desc: 'Define content plan for the website', tag: 'marketing', assignees: ['arjun'], date: 'Jun 02', status: 'backlog', priority: '' },
@@ -44,7 +62,7 @@ const defaultTasks = [
     { id: 18, title: 'Logo Design', desc: 'Design new logo for brand', tag: 'design', assignees: ['priya'], date: 'May 18', status: 'done', priority: '' }
 ];
 
-const defaultActivities = [
+const demoActivities = [
     { id: 1, userId: 'arjun', action: 'moved', target: '“Homepage Development”', extra: 'to In Progress', time: '2 min ago', icon: 'fa-arrow-right' },
     { id: 2, userId: 'priya', action: 'assigned task', target: '“Blog Section”', extra: 'to Rohan Verma', time: '15 min ago', icon: 'fa-user-plus' },
     { id: 3, userId: 'rohan', action: 'updated due date for', target: '“Mobile Responsiveness”', extra: '', time: '1 hour ago', icon: 'fa-calendar-days' },
@@ -52,40 +70,40 @@ const defaultActivities = [
     { id: 5, userId: 'ankit', action: 'completed', target: '“Project Setup”', extra: 'task', time: '3 hours ago', icon: 'fa-circle-check' }
 ];
 
-// Load initial arrays from LocalStorage if available
+// Load initial arrays from LocalStorage if available, otherwise fresh workspace
 function loadProjects() {
     try {
         const saved = localStorage.getItem('nexboard_projects');
-        return saved ? JSON.parse(saved) : defaultProjects;
+        return saved ? JSON.parse(saved) : freshProjects;
     } catch(e) {
-        return defaultProjects;
+        return freshProjects;
     }
 }
 
 function loadMembers() {
     try {
         const saved = localStorage.getItem('nexboard_members');
-        return saved ? JSON.parse(saved) : defaultMembers;
+        return saved ? JSON.parse(saved) : freshMembers;
     } catch(e) {
-        return defaultMembers;
+        return freshMembers;
     }
 }
 
 function loadTasks() {
     try {
         const saved = localStorage.getItem('nexboard_tasks');
-        return saved ? JSON.parse(saved) : defaultTasks;
+        return saved ? JSON.parse(saved) : freshTasks;
     } catch(e) {
-        return defaultTasks;
+        return freshTasks;
     }
 }
 
 function loadActivities() {
     try {
         const saved = localStorage.getItem('nexboard_activities');
-        return saved ? JSON.parse(saved) : defaultActivities;
+        return saved ? JSON.parse(saved) : freshActivities;
     } catch(e) {
-        return defaultActivities;
+        return freshActivities;
     }
 }
 
@@ -104,6 +122,25 @@ export function saveState() {
     } catch(e) {
         console.error('Failed to save to localStorage:', e);
     }
+}
+
+// Reset workspace to fresh state
+export function resetToFreshBoard() {
+    localStorage.clear();
+    projects = [...freshProjects];
+    members = { ...freshMembers };
+    tasks = [...freshTasks];
+    activities = [...freshActivities];
+    saveState();
+}
+
+// Load rich sample demo data
+export function loadSampleDemoData() {
+    projects = [...demoProjects];
+    members = { ...demoMembers };
+    tasks = [...demoTasks];
+    activities = [...demoActivities];
+    saveState();
 }
 
 // Dynamic Member Addition Helper
@@ -151,10 +188,11 @@ export function deleteTask(id) {
     }
 }
 
-export function addActivity(action, target, extra = '', icon = 'fa-plus', userId = 'arjun') {
+export function addActivity(action, target, extra = '', icon = 'fa-plus', userId = 'admin') {
+    const defaultUser = Object.keys(members)[0] || 'admin';
     activities.unshift({
         id: activities.length + 1,
-        userId: userId,
+        userId: userId || defaultUser,
         action: action,
         target: target,
         extra: extra,

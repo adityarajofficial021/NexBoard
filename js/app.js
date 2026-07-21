@@ -4,7 +4,7 @@
 import { initDragAndDrop } from './modules/dragDrop.js';
 import { initFilteringSystem, currentFilters, applyActiveFilters } from './modules/filter.js';
 // Import central raw data store arrays and helpers
-import { projects, members, tasks, activities, deleteTask, saveState, addActivity, addMember, addProject } from './modules/state.js';
+import { projects, members, tasks, activities, deleteTask, saveState, addActivity, addMember, addProject, resetToFreshBoard, loadSampleDemoData } from './modules/state.js';
 
 // Import UI component builders
 import { renderDesktopBoard, renderStats } from './components/board.js';
@@ -17,27 +17,33 @@ let targetColumnId = 'todo';
  */
 document.addEventListener('DOMContentLoaded', () => {
     // 1. Core Structural Layout Renderers
-    renderSidebarProjects();
-    renderSidebarTeam();
-    renderAssigneeFormOptions();
-    renderFilterAssigneeOptions();
-    
-    // 2. Main Workspace Dynamic Renderers
-    renderDesktopBoard();
-    initDragAndDrop();
-    renderStats();
-    renderDesktopActivities();
-    renderMobileBoard(); // Dynamic mobile phone layout renderer
-    
-    // 3. Bind Global Interactivity Actions
+    refreshAllUI();
+
+    // 2. Bind Global Interactivity Actions
     initGlobalInteractivity();
     initModalEventListeners();
     initMemberAndProjectModals();
+    initDemoAndFreshBoardControls();
     initFilteringSystem();
     initKeyboardShortcuts();
     
     console.log("🚀 NexBoard Architecture modular system successfully initialized!");
 });
+
+/**
+ * Master UI refresher function
+ */
+export function refreshAllUI() {
+    renderSidebarProjects();
+    renderSidebarTeam();
+    renderAssigneeFormOptions();
+    renderFilterAssigneeOptions();
+    renderDesktopBoard();
+    initDragAndDrop();
+    renderStats();
+    renderDesktopActivities();
+    renderMobileBoard();
+}
 
 /**
  * Renders the project categories list inside the left sidebar drawer
@@ -52,7 +58,6 @@ export function renderSidebarProjects() {
         </li>
     `).join('');
 
-    // Attach click listener on projects
     projectListContainer.querySelectorAll('li').forEach(item => {
         item.addEventListener('click', (e) => {
             projectListContainer.querySelectorAll('li').forEach(l => l.classList.remove('active'));
@@ -85,7 +90,6 @@ export function renderSidebarTeam() {
         </li>
     `).join('');
 
-    // Clicking team member filters task list for that member
     teamListContainer.querySelectorAll('li').forEach(item => {
         item.addEventListener('click', (e) => {
             const memberId = e.currentTarget.getAttribute('data-member-id');
@@ -153,7 +157,6 @@ export function renderDesktopActivities() {
  * Attaches document-level delegators for deleting cards, sidebar navigation tabs, and shortcuts
  */
 function initGlobalInteractivity() {
-    // 1. Task Card Delete Button Handler
     document.addEventListener('click', (e) => {
         const deleteBtn = e.target.closest('.btn-card-delete');
         if (deleteBtn) {
@@ -161,15 +164,11 @@ function initGlobalInteractivity() {
             const taskId = parseInt(deleteBtn.getAttribute('data-task-id'), 10);
             if (taskId) {
                 deleteTask(taskId);
-                renderDesktopBoard();
-                renderStats();
-                renderDesktopActivities();
-                renderMobileBoard();
+                refreshAllUI();
             }
         }
     });
 
-    // 2. Sidebar Navigation Tabs Switcher
     const navItems = document.querySelectorAll('.sidebar-nav .nav-item');
     navItems.forEach(item => {
         item.addEventListener('click', (e) => {
@@ -179,9 +178,10 @@ function initGlobalInteractivity() {
 
             const label = item.querySelector('span')?.textContent.trim();
             if (label === 'My Tasks') {
-                currentFilters.assignee = 'arjun'; // Filter tasks assigned to Arjun
+                const firstUser = Object.keys(members)[0] || 'admin';
+                currentFilters.assignee = firstUser;
                 const filterAssignee = document.getElementById('filter-assignee');
-                if (filterAssignee) filterAssignee.value = 'arjun';
+                if (filterAssignee) filterAssignee.value = firstUser;
             } else {
                 currentFilters.assignee = '';
                 const filterAssignee = document.getElementById('filter-assignee');
@@ -206,6 +206,28 @@ function initKeyboardShortcuts() {
 }
 
 /**
+ * Demo Data & Fresh Board Mode Controller
+ */
+function initDemoAndFreshBoardControls() {
+    const demoBtn = document.getElementById('btn-load-demo');
+    const freshBtn = document.getElementById('btn-reset-fresh');
+
+    if (demoBtn) {
+        demoBtn.addEventListener('click', () => {
+            loadSampleDemoData();
+            refreshAllUI();
+        });
+    }
+
+    if (freshBtn) {
+        freshBtn.addEventListener('click', () => {
+            resetToFreshBoard();
+            refreshAllUI();
+        });
+    }
+}
+
+/**
  * Dynamic Add Member and Add Project Modals initialization
  */
 function initMemberAndProjectModals() {
@@ -219,7 +241,6 @@ function initMemberAndProjectModals() {
     const cancelProjectBtn = document.getElementById('btn-cancel-project-modal');
     const addProjectForm = document.getElementById('add-project-form');
 
-    // Click hooks to trigger Invite / Add Team Member
     const inviteBtn = document.querySelector('.btn-invite-members');
     const teamAddBtn = document.querySelectorAll('.sidebar-section')[1]?.querySelector('.btn-section-add');
 
@@ -236,18 +257,13 @@ function initMemberAndProjectModals() {
             
             if (nameVal && roleVal) {
                 addMember(nameVal, roleVal);
-                renderSidebarTeam();
-                renderAssigneeFormOptions();
-                renderFilterAssigneeOptions();
-                renderDesktopActivities();
-                renderMobileBoard();
+                refreshAllUI();
                 addMemberForm.reset();
                 addMemberModal?.classList.remove('active');
             }
         });
     }
 
-    // Click hooks to trigger Create Project
     const projAddBtn = document.querySelectorAll('.sidebar-section')[0]?.querySelector('.btn-section-add');
     if (projAddBtn) projAddBtn.addEventListener('click', () => addProjectModal?.classList.add('active'));
     if (closeProjectBtn) closeProjectBtn.addEventListener('click', () => addProjectModal?.classList.remove('active'));
@@ -301,7 +317,6 @@ function initModalEventListeners() {
         if (dateErrorLabel) dateErrorLabel.classList.remove('visible');
     };
 
-    // Global click delegate listener to capture clicks on dynamic "Add Task" buttons
     document.addEventListener('click', (e) => {
         const trigger = e.target.closest('.btn-add-task-trigger') || e.target.closest('.btn-column-add-task');
         if (trigger) {
@@ -320,7 +335,6 @@ function initModalEventListeners() {
         });
     }
 
-    // Form Submission Handler
     if (taskCreationFormDom) {
         taskCreationFormDom.addEventListener('submit', (e) => {
             e.preventDefault();
@@ -352,12 +366,13 @@ function initModalEventListeners() {
                 const dateSegments = dateValue.split('-');
                 const formattedDisplayDate = `${monthNames[parseInt(dateSegments[1]) - 1]} ${dateSegments[2]}`;
 
+                const defaultUser = Object.keys(members)[0] || 'admin';
                 const generatedNewTaskObj = {
                     id: Date.now(),
                     title: titleValue,
                     desc: descValue || 'No description provided.',
                     tag: priorityValue === 'High' ? 'design' : (priorityValue === 'Medium' ? 'development' : 'marketing'),
-                    assignees: assigneeValue ? [assigneeValue] : ['arjun'],
+                    assignees: assigneeValue ? [assigneeValue] : [defaultUser],
                     date: formattedDisplayDate,
                     status: targetColumnId || 'todo',
                     priority: priorityValue
@@ -374,11 +389,7 @@ function initModalEventListeners() {
                 );
 
                 saveState();
-
-                renderDesktopBoard();
-                renderStats();
-                renderDesktopActivities();
-                renderMobileBoard();
+                refreshAllUI();
                 closeTaskModal();
             }
         });
