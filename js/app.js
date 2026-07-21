@@ -3,26 +3,32 @@
 // =========================================================================
 import { initDragAndDrop } from './modules/dragDrop.js';
 import { initFilteringSystem, currentFilters, applyActiveFilters } from './modules/filter.js';
-// Import central raw data store arrays and helpers
-import { projects, members, tasks, activities, deleteTask, saveState, addActivity, addMember, addProject } from './modules/state.js';
+import { 
+    projects, members, tasks, activities, activeProjectId, setActiveProjectId,
+    deleteTask, updateTask, saveState, addActivity, addMember, addProject, formatDisplayDate 
+} from './modules/state.js';
 
-// Import UI component builders
 import { renderDesktopBoard, renderStats } from './components/board.js';
 import { renderMobileBoard } from './components/mobileBoard.js';
 
 let targetColumnId = 'todo';
+let taskToDeleteId = null;
 
 /**
  * Initializes the entire application state and binds global event triggers
  */
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. Core Structural Layout Renderers
+    // 1. Load Saved Theme Preference
+    initThemeController();
+
+    // 2. Core Structural Layout Renderers
     refreshAllUI();
 
-    // 2. Bind Global Interactivity Actions
+    // 3. Bind Global Interactivity Actions
     initGlobalInteractivity();
     initModalEventListeners();
     initMemberAndProjectModals();
+    initDeleteConfirmationModal();
     initFilteringSystem();
     initKeyboardShortcuts();
     
@@ -45,6 +51,47 @@ export function refreshAllUI() {
 }
 
 /**
+ * Dark/Light Theme Controller & Persistence
+ */
+function initThemeController() {
+    const themeBtn = document.getElementById('btn-theme-toggle');
+    const savedTheme = localStorage.getItem('nexboard_theme') || 'light';
+    
+    if (savedTheme === 'dark') {
+        document.body.classList.add('dark-theme');
+        if (themeBtn) themeBtn.innerHTML = '<i class="fa-solid fa-sun"></i>';
+    }
+
+    if (themeBtn) {
+        themeBtn.addEventListener('click', () => {
+            document.body.classList.toggle('dark-theme');
+            const isDark = document.body.classList.contains('dark-theme');
+            themeBtn.innerHTML = isDark ? '<i class="fa-solid fa-sun"></i>' : '<i class="fa-solid fa-moon"></i>';
+            localStorage.setItem('nexboard_theme', isDark ? 'dark' : 'light');
+            showToast(isDark ? 'Dark Mode Enabled' : 'Light Mode Enabled', 'info');
+        });
+    }
+}
+
+/**
+ * Toast Notification Popup Dispatcher
+ */
+export function showToast(message, type = 'info') {
+    const container = document.getElementById('toast-container');
+    if (!container) return;
+    const toast = document.createElement('div');
+    toast.className = `toast-notification ${type}`;
+    const iconMap = { success: 'fa-circle-check', warning: 'fa-trash-can', info: 'fa-circle-info' };
+    toast.innerHTML = `<i class="fa-solid ${iconMap[type] || 'fa-bell'}"></i> <span>${message}</span>`;
+    container.appendChild(toast);
+    setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(100%)';
+        setTimeout(() => toast.remove(), 300);
+    }, 3000);
+}
+
+/**
  * Renders the project categories list inside the left sidebar drawer
  */
 export function renderSidebarProjects() {
@@ -52,19 +99,19 @@ export function renderSidebarProjects() {
     if (!projectListContainer) return;
 
     projectListContainer.innerHTML = projects.map(proj => `
-        <li class="${proj.active ? 'active' : ''}" data-project-id="${proj.id}">
+        <li class="${proj.id === activeProjectId ? 'active' : ''}" data-project-id="${proj.id}">
             <span class="project-bullet ${proj.color}"></span> ${proj.name}
         </li>
     `).join('');
 
     projectListContainer.querySelectorAll('li').forEach(item => {
         item.addEventListener('click', (e) => {
-            projectListContainer.querySelectorAll('li').forEach(l => l.classList.remove('active'));
-            e.currentTarget.classList.add('active');
-            
-            const projName = e.currentTarget.textContent.trim();
+            const projId = e.currentTarget.getAttribute('data-project-id');
+            setActiveProjectId(projId);
+            const projObj = projects.find(p => p.id === projId);
             const headerTitle = document.getElementById('desktop-project-title');
-            if (headerTitle) headerTitle.textContent = projName;
+            if (headerTitle && projObj) headerTitle.textContent = projObj.name;
+            refreshAllUI();
         });
     });
 }
@@ -129,7 +176,7 @@ export function renderFilterAssigneeOptions() {
 }
 
 /**
- * Renders the primary log history data arrays within the right sidebar dashboard area
+ * Renders activity log entries in right sidebar
  */
 export function renderDesktopActivities() {
     const activityListContainer = document.getElementById('desktop-activity-list');
@@ -162,21 +209,52 @@ export function renderDesktopActivities() {
 }
 
 /**
- * Attaches document-level delegators for deleting cards, sidebar navigation tabs, and shortcuts
+ * Attaches document-level delegators for editing, deleting cards, and mobile quick moves
  */
 function initGlobalInteractivity() {
+    // 1. Task Card Delete Button Handler (Triggers Confirmation Modal)
     document.addEventListener('click', (e) => {
         const deleteBtn = e.target.closest('.btn-card-delete');
         if (deleteBtn) {
             e.stopPropagation();
             const taskId = parseInt(deleteBtn.getAttribute('data-task-id'), 10);
             if (taskId) {
-                deleteTask(taskId);
+                taskToDeleteId = taskId;
+                const confirmModal = document.getElementById('confirm-delete-modal');
+                if (confirmModal) confirmModal.classList.add('active');
+            }
+        }
+    });
+
+    // 2. Task Card Edit Button Handler
+    document.addEventListener('click', (e) => {
+        const editBtn = e.target.closest('.btn-card-edit');
+        if (editBtn) {
+            e.stopPropagation();
+            const taskId = parseInt(editBtn.getAttribute('data-task-id'), 10);
+            if (taskId) {
+                openTaskModalForEdit(taskId);
+            }
+        }
+    });
+
+    // 3. Mobile Status Select Dropdown Change Listener
+    document.addEventListener('change', (e) => {
+        if (e.target.classList.contains('mobile-status-select')) {
+            const taskId = parseInt(e.target.getAttribute('data-task-id'), 10);
+            const newStatus = e.target.value;
+            const targetTask = tasks.find(t => t.id === taskId);
+            if (targetTask && targetTask.status !== newStatus) {
+                targetTask.status = newStatus;
+                addActivity('moved task', `“${targetTask.title}”`, `to ${newStatus.toUpperCase()}`, 'fa-arrow-right');
+                saveState();
+                showToast(`Moved to ${newStatus.toUpperCase()}`, 'success');
                 refreshAllUI();
             }
         }
     });
 
+    // 4. Sidebar Nav Tabs Switcher
     const navItems = document.querySelectorAll('.sidebar-nav .nav-item');
     navItems.forEach(item => {
         item.addEventListener('click', (e) => {
@@ -198,6 +276,34 @@ function initGlobalInteractivity() {
             applyActiveFilters();
         });
     });
+}
+
+/**
+ * Delete Confirmation Modal Controller
+ */
+function initDeleteConfirmationModal() {
+    const confirmModal = document.getElementById('confirm-delete-modal');
+    const cancelBtn = document.getElementById('btn-cancel-delete');
+    const confirmBtn = document.getElementById('btn-confirm-delete');
+
+    if (cancelBtn) {
+        cancelBtn.addEventListener('click', () => {
+            confirmModal?.classList.remove('active');
+            taskToDeleteId = null;
+        });
+    }
+
+    if (confirmBtn) {
+        confirmBtn.addEventListener('click', () => {
+            if (taskToDeleteId) {
+                deleteTask(taskToDeleteId);
+                confirmModal?.classList.remove('active');
+                taskToDeleteId = null;
+                showToast('Task deleted successfully', 'warning');
+                refreshAllUI();
+            }
+        });
+    }
 }
 
 /**
@@ -243,6 +349,7 @@ function initMemberAndProjectModals() {
             
             if (nameVal && roleVal) {
                 addMember(nameVal, roleVal);
+                showToast(`Added team member: ${nameVal}`, 'success');
                 refreshAllUI();
                 addMemberForm.reset();
                 addMemberModal?.classList.remove('active');
@@ -263,18 +370,45 @@ function initMemberAndProjectModals() {
             
             if (nameVal) {
                 const newProj = addProject(nameVal, colorVal);
+                showToast(`Project "${nameVal}" created`, 'success');
                 renderSidebarProjects();
                 const headerTitle = document.getElementById('desktop-project-title');
                 if (headerTitle) headerTitle.textContent = newProj.name;
                 addProjectForm.reset();
                 addProjectModal?.classList.remove('active');
+                refreshAllUI();
             }
         });
     }
 }
 
 /**
- * Orchestrates task modal form behaviors
+ * Pre-populates and opens Task Modal for editing an existing task
+ */
+function openTaskModalForEdit(taskId) {
+    const task = tasks.find(t => t.id === taskId);
+    if (!task) return;
+
+    const taskModalOverlay = document.getElementById('add-task-modal');
+    const modalHeading = document.getElementById('modal-heading');
+    const submitBtn = document.getElementById('btn-submit-task');
+
+    document.getElementById('task-edit-id').value = task.id;
+    document.getElementById('task-title-input').value = task.title;
+    document.getElementById('task-desc-input').value = task.desc || '';
+    document.getElementById('task-assignee').value = task.assignees[0] || '';
+    document.getElementById('task-priority').value = task.priority || 'Medium';
+    document.getElementById('task-tag-select').value = task.tag || 'development';
+    document.getElementById('task-status-select').value = task.status || 'todo';
+    document.getElementById('task-due-date').value = task.dueDate || '';
+
+    if (modalHeading) modalHeading.textContent = 'Edit Task';
+    if (submitBtn) submitBtn.textContent = 'Update Task';
+    if (taskModalOverlay) taskModalOverlay.classList.add('active');
+}
+
+/**
+ * Orchestrates task creation and edit modal form behaviors
  */
 function initModalEventListeners() {
     const taskModalOverlay = document.getElementById('add-task-modal');
@@ -282,23 +416,28 @@ function initModalEventListeners() {
     const modalCancelButton = document.getElementById('btn-cancel-modal');
     const taskCreationFormDom = document.getElementById('add-task-form');
     const taskDueDateInputField = document.getElementById('task-due-date');
+    const modalHeading = document.getElementById('modal-heading');
+    const submitBtn = document.getElementById('btn-submit-task');
 
     const titleErrorLabel = document.getElementById('title-error-msg');
     const dateErrorLabel = document.getElementById('date-error-msg');
 
-    const openTaskModal = (colId = 'todo') => {
+    const openTaskModalForCreate = (colId = 'todo') => {
         if (!taskModalOverlay) return;
         targetColumnId = colId;
+        document.getElementById('task-edit-id').value = '';
+        taskCreationFormDom.reset();
+        document.getElementById('task-status-select').value = colId;
+        if (modalHeading) modalHeading.textContent = 'Create New Task';
+        if (submitBtn) submitBtn.textContent = 'Create Task';
         taskModalOverlay.classList.add('active');
-        if (taskDueDateInputField) {
-            taskDueDateInputField.min = new Date().toISOString().split('T')[0];
-        }
     };
 
     const closeTaskModal = () => {
         if (!taskModalOverlay) return;
         taskModalOverlay.classList.remove('active');
         if (taskCreationFormDom) taskCreationFormDom.reset();
+        document.getElementById('task-edit-id').value = '';
         if (titleErrorLabel) titleErrorLabel.classList.remove('visible');
         if (dateErrorLabel) dateErrorLabel.classList.remove('visible');
     };
@@ -308,7 +447,7 @@ function initModalEventListeners() {
         if (trigger) {
             const columnWrapper = trigger.closest('.board-column');
             const colId = columnWrapper ? columnWrapper.getAttribute('data-status') : 'todo';
-            openTaskModal(colId);
+            openTaskModalForCreate(colId);
         }
     });
 
@@ -325,10 +464,13 @@ function initModalEventListeners() {
         taskCreationFormDom.addEventListener('submit', (e) => {
             e.preventDefault();
             
+            const editIdVal = document.getElementById('task-edit-id')?.value;
             const titleValue = document.getElementById('task-title-input')?.value.trim();
             const descValue = document.getElementById('task-desc-input')?.value.trim();
             const assigneeValue = document.getElementById('task-assignee')?.value;
             const priorityValue = document.getElementById('task-priority')?.value;
+            const tagValue = document.getElementById('task-tag-select')?.value;
+            const statusValue = document.getElementById('task-status-select')?.value;
             const dateValue = taskDueDateInputField?.value;
 
             let isInputValid = true;
@@ -340,7 +482,7 @@ function initModalEventListeners() {
                 titleErrorLabel?.classList.remove('visible');
             }
 
-            if (!dateValue || new Date(dateValue) < new Date().setHours(0,0,0,0)) {
+            if (!dateValue) {
                 dateErrorLabel?.classList.add('visible');
                 isInputValid = false;
             } else {
@@ -348,33 +490,53 @@ function initModalEventListeners() {
             }
 
             if (isInputValid) {
-                const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-                const dateSegments = dateValue.split('-');
-                const formattedDisplayDate = `${monthNames[parseInt(dateSegments[1]) - 1]} ${dateSegments[2]}`;
-
+                const formattedDisplayDate = formatDisplayDate(dateValue);
                 const defaultUser = Object.keys(members)[0] || 'admin';
-                const generatedNewTaskObj = {
-                    id: Date.now(),
-                    title: titleValue,
-                    desc: descValue || 'No description provided.',
-                    tag: priorityValue === 'High' ? 'design' : (priorityValue === 'Medium' ? 'development' : 'marketing'),
-                    assignees: assigneeValue ? [assigneeValue] : [defaultUser],
-                    date: formattedDisplayDate,
-                    status: targetColumnId || 'todo',
-                    priority: priorityValue
-                };
 
-                tasks.push(generatedNewTaskObj);
+                if (editIdVal) {
+                    // Update existing task
+                    const taskIdNum = parseInt(editIdVal, 10);
+                    updateTask({
+                        id: taskIdNum,
+                        title: titleValue,
+                        desc: descValue || 'No description provided.',
+                        tag: tagValue || 'development',
+                        assignees: assigneeValue ? [assigneeValue] : [defaultUser],
+                        dueDate: dateValue,
+                        date: formattedDisplayDate,
+                        status: statusValue || 'todo',
+                        priority: priorityValue
+                    });
+                    showToast('Task updated successfully', 'success');
+                } else {
+                    // Create new task
+                    const generatedNewTaskObj = {
+                        id: Date.now(),
+                        projectId: activeProjectId,
+                        title: titleValue,
+                        desc: descValue || 'No description provided.',
+                        tag: tagValue || 'development',
+                        assignees: assigneeValue ? [assigneeValue] : [defaultUser],
+                        dueDate: dateValue,
+                        date: formattedDisplayDate,
+                        status: statusValue || targetColumnId || 'todo',
+                        priority: priorityValue
+                    };
 
-                addActivity(
-                    'created task',
-                    `“${generatedNewTaskObj.title}”`,
-                    `under ${generatedNewTaskObj.status.toUpperCase()}`,
-                    'fa-plus',
-                    generatedNewTaskObj.assignees[0]
-                );
+                    tasks.push(generatedNewTaskObj);
 
-                saveState();
+                    addActivity(
+                        'created task',
+                        `“${generatedNewTaskObj.title}”`,
+                        `under ${generatedNewTaskObj.status.toUpperCase()}`,
+                        'fa-plus',
+                        generatedNewTaskObj.assignees[0]
+                    );
+
+                    saveState();
+                    showToast('Task created successfully', 'success');
+                }
+
                 refreshAllUI();
                 closeTaskModal();
             }

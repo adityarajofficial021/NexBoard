@@ -1,12 +1,15 @@
-// Central Data Store for NexBoard - Clean Production State
+// Central Data Store for NexBoard with Multi-Project & Persistent State Management
 
-// Clean Default Initial Workspace
+// Default Initial Workspace Seed Data
 const initialProjects = [
-    { id: 'redesign', name: 'My Workspace', color: 'redesign', active: true }
+    { id: 'redesign', name: 'Website Redesign', color: 'redesign', active: true },
+    { id: 'mobile', name: 'Mobile App', color: 'mobile', active: false }
 ];
 
 const initialMembers = {
-    admin: { name: 'Admin', role: 'Owner', avatar: 'https://ui-avatars.com/api/?name=Admin&background=0d9488&color=fff&bold=true', status: 'online' }
+    admin: { name: 'Admin', role: 'Owner', avatar: 'https://ui-avatars.com/api/?name=Admin&background=0d9488&color=fff&bold=true', status: 'online' },
+    priya: { name: 'Priya Singh', role: 'Designer', avatar: 'https://ui-avatars.com/api/?name=Priya+Singh&background=ec4899&color=fff&bold=true', status: 'online' },
+    rohan: { name: 'Rohan Verma', role: 'Developer', avatar: 'https://ui-avatars.com/api/?name=Rohan+Verma&background=3b82f6&color=fff&bold=true', status: 'online' }
 };
 
 export const columns = [
@@ -17,10 +20,27 @@ export const columns = [
     { id: 'done', name: 'Done', icon: 'fa-circle-check', class: 'bg-done', indicator: 'indicator-done' }
 ];
 
-const initialTasks = [];
-const initialActivities = [];
+const initialTasks = [
+    { id: 1, projectId: 'redesign', title: 'Landing Page UI Design', desc: 'Design modern dark and light mode mockups for landing page', tag: 'design', assignees: ['priya'], dueDate: '2026-07-28', date: 'Jul 28', status: 'todo', priority: 'High' },
+    { id: 2, projectId: 'redesign', title: 'Setup Component System', desc: 'Configure modular JS structure and state store', tag: 'development', assignees: ['rohan'], dueDate: '2026-07-20', date: 'Jul 20', status: 'inprogress', priority: 'Medium' },
+    { id: 3, projectId: 'redesign', title: 'Project Kickoff', desc: 'Kickoff meeting with stakeholders', tag: 'planning', assignees: ['admin'], dueDate: '2026-07-15', date: 'Jul 15', status: 'done', priority: 'Low' },
+    { id: 4, projectId: 'mobile', title: 'Mobile App Navigation', desc: 'Implement bottom mobile navigation tab switcher', tag: 'development', assignees: ['admin'], dueDate: '2026-07-30', date: 'Jul 30', status: 'todo', priority: 'High' }
+];
 
-// Load arrays from LocalStorage if available, otherwise start clean
+const initialActivities = [
+    { id: 1, userId: 'admin', action: 'initialized workspace', target: '“Website Redesign”', extra: '', time: 'Just now', icon: 'fa-square-check' }
+];
+
+// Active Project State Identifier
+export let activeProjectId = 'redesign';
+
+export function setActiveProjectId(id) {
+    activeProjectId = id;
+    projects.forEach(p => p.active = (p.id === id));
+    saveState();
+}
+
+// Load arrays from LocalStorage if available, otherwise use initial seeds
 function loadProjects() {
     try {
         const saved = localStorage.getItem('nexboard_projects');
@@ -62,6 +82,10 @@ export let members = loadMembers();
 export let tasks = loadTasks();
 export let activities = loadActivities();
 
+// Sync active project state
+const currentActive = projects.find(p => p.active);
+if (currentActive) activeProjectId = currentActive.id;
+
 // Save state changes to LocalStorage
 export function saveState() {
     try {
@@ -70,8 +94,41 @@ export function saveState() {
         localStorage.setItem('nexboard_tasks', JSON.stringify(tasks));
         localStorage.setItem('nexboard_activities', JSON.stringify(activities));
     } catch(e) {
-        console.error('Failed to save to localStorage:', e);
+        console.error('Failed to save state to localStorage:', e);
     }
+}
+
+// Helper to format ISO date (YYYY-MM-DD) into display string (e.g. "Jul 28")
+export function formatDisplayDate(isoDateStr) {
+    if (!isoDateStr) return 'No Date';
+    try {
+        const parts = isoDateStr.split('-');
+        if (parts.length === 3) {
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            return `${months[parseInt(parts[1], 10) - 1]} ${parts[2]}`;
+        }
+        return isoDateStr;
+    } catch(e) {
+        return isoDateStr;
+    }
+}
+
+// Dynamic Statistical Helpers
+export function getProjectProgress(projId = activeProjectId) {
+    const projTasks = tasks.filter(t => t.projectId === projId || !t.projectId);
+    if (projTasks.length === 0) return 0;
+    const completed = projTasks.filter(t => t.status === 'done').length;
+    return Math.round((completed / projTasks.length) * 100);
+}
+
+export function getOverdueCount(projId = activeProjectId) {
+    const today = new Date().setHours(0,0,0,0);
+    const projTasks = tasks.filter(t => t.projectId === projId || !t.projectId);
+    return projTasks.filter(t => {
+        if (t.status === 'done' || !t.dueDate) return false;
+        const taskDate = new Date(t.dueDate).setHours(0,0,0,0);
+        return taskDate < today;
+    }).length;
 }
 
 // Dynamic Member Addition Helper
@@ -104,6 +161,7 @@ export function addProject(name, color = 'redesign') {
     };
     
     projects.push(newProj);
+    activeProjectId = id;
     addActivity('created new project', `“${name}”`, '', 'fa-folder-plus');
     saveState();
     return newProj;
@@ -115,6 +173,15 @@ export function deleteTask(id) {
     if (index !== -1) {
         const removed = tasks.splice(index, 1)[0];
         addActivity('deleted task', `“${removed.title}”`, '', 'fa-trash');
+        saveState();
+    }
+}
+
+export function updateTask(updatedTask) {
+    const index = tasks.findIndex(t => t.id === updatedTask.id);
+    if (index !== -1) {
+        tasks[index] = { ...tasks[index], ...updatedTask };
+        addActivity('updated task', `“${updatedTask.title}”`, '', 'fa-pen-to-square');
         saveState();
     }
 }

@@ -2,7 +2,7 @@
 // NexBoard - Mobile Layout Rendering Component Module
 // =========================================================================
 
-import { tasks, columns, members, activities } from '../modules/state.js';
+import { tasks, columns, members, activities, activeProjectId } from '../modules/state.js';
 import { getFilteredTasks } from '../modules/filter.js';
 
 let activeMobileTab = 'todo';
@@ -19,12 +19,11 @@ export function renderMobileBoard() {
 /**
  * Renders horizontal category tab buttons across the top bar
  */
-
 export function renderMobileTabs() {
     const tabsContainer = document.getElementById('mobile-tabs-bar');
     if (!tabsContainer) return;
 
-    const filteredTasks = getFilteredTasks();
+    const filteredTasks = getFilteredTasks().filter(t => t.projectId === activeProjectId || !t.projectId);
 
     tabsContainer.innerHTML = columns.map(col => {
         const colTasksCount = filteredTasks.filter(t => t.status === col.id).length;
@@ -59,7 +58,7 @@ export function renderMobileList() {
     if (!listsContainer) return;
 
     const currentCol = columns.find(c => c.id === activeMobileTab) || columns[1];
-    const filteredTasks = getFilteredTasks();
+    const filteredTasks = getFilteredTasks().filter(t => t.projectId === activeProjectId || !t.projectId);
     const colTasks = filteredTasks.filter(t => t.status === activeMobileTab);
 
     if (titleEl) titleEl.textContent = currentCol.name;
@@ -86,7 +85,7 @@ export function renderMobileList() {
  * Helper to construct HTML for an individual mobile task card
  */
 function getMobileCardHtml(task) {
-    const assigneePics = task.assignees.map(userId => {
+    const assigneePics = (task.assignees || []).map(userId => {
         const m = members[userId];
         return m ? `<img src="${m.avatar}" alt="${m.name}" title="${m.name}">` : '';
     }).join('');
@@ -94,13 +93,20 @@ function getMobileCardHtml(task) {
     let dateClass = task.status === 'todo' ? 'text-warning' : (task.status === 'done' ? 'text-success' : '');
     const priorityHtml = task.priority ? `<span class="card-priority priority-${task.priority.toLowerCase()}"><i class="fa-solid fa-flag"></i> ${task.priority}</span>` : '';
 
+    const statusOptions = columns.map(c => 
+        `<option value="${c.id}" ${c.id === task.status ? 'selected' : ''}>Move: ${c.name}</option>`
+    ).join('');
+
     return `
         <div class="task-card" data-task-id="${task.id}">
             <div class="card-header">
                 <span class="card-tag tag-${task.tag}">${task.tag}</span>
                 <div class="card-header-actions" style="display:flex; gap:6px; align-items:center;">
+                    <select class="mobile-status-select" data-task-id="${task.id}">
+                        ${statusOptions}
+                    </select>
+                    <button class="btn-card-edit" data-task-id="${task.id}" style="background:none; border:none; color:var(--text-light); cursor:pointer; font-size:0.85rem; padding:2px 4px;" title="Edit Task"><i class="fa-solid fa-pen-to-square"></i></button>
                     <button class="btn-card-delete" data-task-id="${task.id}" style="background:none; border:none; color:var(--text-light); cursor:pointer; font-size:0.85rem; padding:2px 4px;" title="Delete Task"><i class="fa-solid fa-trash-can"></i></button>
-                    <button class="btn-card-more"><i class="fa-solid fa-ellipsis"></i></button>
                 </div>
             </div>
             <h4 class="card-title">${task.title}</h4>
@@ -109,7 +115,7 @@ function getMobileCardHtml(task) {
                 <div class="assignees-group">${assigneePics}</div>
                 <div class="card-meta">
                     ${priorityHtml}
-                    <span class="card-due-date ${dateClass}"><i class="fa-regular fa-calendar"></i> ${task.date}</span>
+                    <span class="card-due-date ${dateClass}"><i class="fa-regular fa-calendar"></i> ${task.date || 'No Date'}</span>
                 </div>
             </div>
         </div>

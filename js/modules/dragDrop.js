@@ -2,7 +2,7 @@
 // NexBoard - Native HTML5 Drag and Drop Engine Module
 // =========================================================================
 
-import { tasks, activities, members } from './state.js';
+import { tasks, activities, members, saveState } from './state.js';
 import { renderDesktopBoard, renderStats } from '../components/board.js';
 import { renderMobileBoard } from '../components/mobileBoard.js';
 
@@ -33,7 +33,6 @@ export function initDragAndDrop() {
  */
 function handleDragStart(e) {
     this.classList.add('dragging');
-    // Store the database ID of the card being dragged inside the dataTransfer container
     e.dataTransfer.setData('text/plain', this.getAttribute('data-task-id'));
     e.dataTransfer.effectAllowed = 'move';
 }
@@ -43,39 +42,27 @@ function handleDragStart(e) {
  */
 function handleDragEnd() {
     this.classList.remove('dragging');
-    
-    // Clear out residual hover color modifications from all columns
     document.querySelectorAll('.board-column').forEach(column => {
-        column.style.backgroundColor = '#f1f5f9';
+        column.style.backgroundColor = '';
     });
 }
 
-/**
- * Standard override rules configuration to enable dropping cards inside targeted blocks
- */
 function handleDragOver(e) {
     e.preventDefault();
     return false;
 }
 
-/**
- * Toggles column background tints dynamically when a card moves over an active area
- */
 function handleDragEnter(e) {
     const parentColumn = this.closest('.board-column');
     if (parentColumn) {
-        parentColumn.style.backgroundColor = '#e2e8f0'; // Visual highlight accent matching styles rules
+        parentColumn.style.backgroundColor = 'var(--bg-hover)';
     }
 }
 
-/**
- * Reverts background styling transitions when elements exit active drop fields boundaries
- */
 function handleDragLeave(e) {
     const parentColumn = this.closest('.board-column');
-    // Only remove color highlights if moving completely away from the parent target wrapper
     if (parentColumn && !parentColumn.contains(e.relatedTarget)) {
-        parentColumn.style.backgroundColor = '#f1f5f9';
+        parentColumn.style.backgroundColor = '';
     }
 }
 
@@ -89,23 +76,18 @@ function handleDrop(e) {
     const parentColumn = this.closest('.board-column');
     if (!parentColumn) return;
 
-    // Retrieve the target information variables
     const newStatusId = parentColumn.getAttribute('data-status');
     const taskIdStr = e.dataTransfer.getData('text/plain');
     const taskId = parseInt(taskIdStr, 10);
 
-    // Locate matching elements targets structures within state array models
     const targetTask = tasks.find(t => t.id === taskId);
     
     if (targetTask && targetTask.status !== newStatusId) {
         const oldStatus = targetTask.status.toUpperCase();
-        
-        // 1. Mutate state parameters seamlessly 
         targetTask.status = newStatusId;
 
-        // 2. Construct and prepend activity notification logs entries dynamically
-        // Using active assignee profile or default administrator account configuration
-        const actingUserId = targetTask.assignees[0] || 'arjun'; 
+        const defaultUser = Object.keys(members)[0] || 'admin';
+        const actingUserId = (targetTask.assignees && targetTask.assignees[0]) || defaultUser;
         
         activities.unshift({
             id: activities.length + 1,
@@ -117,31 +99,10 @@ function handleDrop(e) {
             icon: 'fa-arrow-right'
         });
 
-        // 3. Trigger global render updates cycles smoothly across workspace segments
+        saveState();
+
         renderDesktopBoard();
         renderStats();
         renderMobileBoard();
-        
-        // Re-inject the right sidebar logs component updates cleanly
-        const activityListContainer = document.getElementById('desktop-activity-list');
-        if (activityListContainer) {
-            activityListContainer.innerHTML = activities.map(act => {
-                const m = members[act.userId];
-                return m ? `
-                    <li class="activity-item" data-activity-id="${act.id}">
-                        <img src="${m.avatar}" alt="${m.name}" class="activity-user-avatar">
-                        <div class="activity-details">
-                            <p class="activity-text">
-                                <span class="act-name">${m.name}</span> ${act.action} <span class="act-target">${act.target}</span> ${act.extra}
-                            </p>
-                            <span class="activity-time">${act.time}</span>
-                        </div>
-                    </li>
-                ` : '';
-            }).join('');
-        }
-
-        // 4. Re-initialize listeners hooks loops to connect newly constructed items fields targets
-        initDragAndDrop();
     }
 }
