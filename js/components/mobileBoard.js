@@ -98,7 +98,10 @@ function getMobileCardHtml(task) {
         <div class="task-card" data-task-id="${task.id}">
             <div class="card-header">
                 <span class="card-tag tag-${task.tag}">${task.tag}</span>
-                <button class="btn-card-more"><i class="fa-solid fa-ellipsis"></i></button>
+                <div class="card-header-actions" style="display:flex; gap:6px; align-items:center;">
+                    <button class="btn-card-delete" data-task-id="${task.id}" style="background:none; border:none; color:var(--text-light); cursor:pointer; font-size:0.85rem; padding:2px 4px;" title="Delete Task"><i class="fa-solid fa-trash-can"></i></button>
+                    <button class="btn-card-more"><i class="fa-solid fa-ellipsis"></i></button>
+                </div>
             </div>
             <h4 class="card-title">${task.title}</h4>
             <p class="card-desc">${task.desc}</p>

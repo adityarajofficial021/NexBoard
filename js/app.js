@@ -2,13 +2,15 @@
 // NexBoard - Root Main Controller Module
 // =========================================================================
 import { initDragAndDrop } from './modules/dragDrop.js';
-import { initFilteringSystem } from './modules/filter.js';
-// Import central raw data store arrays
-import { projects, members, tasks, activities } from './modules/state.js';
+import { initFilteringSystem, currentFilters, applyActiveFilters } from './modules/filter.js';
+// Import central raw data store arrays and helpers
+import { projects, members, tasks, activities, deleteTask, saveState, addActivity } from './modules/state.js';
 
 // Import UI component builders
 import { renderDesktopBoard, renderStats } from './components/board.js';
 import { renderMobileBoard } from './components/mobileBoard.js';
+
+let targetColumnId = 'todo';
 
 /**
  * Initializes the entire application state and binds global event triggers
@@ -27,9 +29,12 @@ document.addEventListener('DOMContentLoaded', () => {
     renderDesktopActivities();
     renderMobileBoard(); // Dynamic mobile phone layout renderer
     
-    // 3. Bind Modal Trigger Interactivity Actions
+    // 3. Bind Global Interactivity Actions
+    initGlobalInteractivity();
     initModalEventListeners();
     initFilteringSystem();
+    initKeyboardShortcuts();
+    
     console.log("🚀 NexBoard Architecture modular system successfully initialized!");
 });
 
@@ -45,6 +50,18 @@ function renderSidebarProjects() {
             <span class="project-bullet ${proj.color}"></span> ${proj.name}
         </li>
     `).join('');
+
+    // Attach click listener on projects
+    projectListContainer.querySelectorAll('li').forEach(item => {
+        item.addEventListener('click', (e) => {
+            projectListContainer.querySelectorAll('li').forEach(l => l.classList.remove('active'));
+            e.currentTarget.classList.add('active');
+            
+            const projName = e.currentTarget.textContent.trim();
+            const headerTitle = document.getElementById('desktop-project-title');
+            if (headerTitle) headerTitle.textContent = projName;
+        });
+    });
 }
 
 /**
@@ -55,7 +72,7 @@ function renderSidebarTeam() {
     if (!teamListContainer) return;
 
     teamListContainer.innerHTML = Object.entries(members).map(([id, m]) => `
-        <li data-member-id="${id}">
+        <li data-member-id="${id}" style="cursor:pointer;">
             <div class="member-avatar">
                 <img src="${m.avatar}" alt="${m.name}">
                 <span class="status-dot ${m.status}"></span>
@@ -66,6 +83,19 @@ function renderSidebarTeam() {
             </div>
         </li>
     `).join('');
+
+    // Clicking team member filters task list for that member
+    teamListContainer.querySelectorAll('li').forEach(item => {
+        item.addEventListener('click', (e) => {
+            const memberId = e.currentTarget.getAttribute('data-member-id');
+            const filterAssignee = document.getElementById('filter-assignee');
+            if (filterAssignee) {
+                filterAssignee.value = memberId;
+                currentFilters.assignee = memberId;
+                applyActiveFilters();
+            }
+        });
+    });
 }
 
 /**
@@ -97,7 +127,7 @@ function renderFilterAssigneeOptions() {
 /**
  * Renders the primary log history data arrays within the right sidebar dashboard area
  */
-function renderDesktopActivities() {
+export function renderDesktopActivities() {
     const activityListContainer = document.getElementById('desktop-activity-list');
     if (!activityListContainer) return;
 
@@ -119,6 +149,62 @@ function renderDesktopActivities() {
 }
 
 /**
+ * Attaches document-level delegators for deleting cards, sidebar navigation tabs, and shortcuts
+ */
+function initGlobalInteractivity() {
+    // 1. Task Card Delete Button Handler
+    document.addEventListener('click', (e) => {
+        const deleteBtn = e.target.closest('.btn-card-delete');
+        if (deleteBtn) {
+            e.stopPropagation();
+            const taskId = parseInt(deleteBtn.getAttribute('data-task-id'), 10);
+            if (taskId) {
+                deleteTask(taskId);
+                renderDesktopBoard();
+                renderStats();
+                renderDesktopActivities();
+                renderMobileBoard();
+            }
+        }
+    });
+
+    // 2. Sidebar Navigation Tabs Switcher
+    const navItems = document.querySelectorAll('.sidebar-nav .nav-item');
+    navItems.forEach(item => {
+        item.addEventListener('click', (e) => {
+            e.preventDefault();
+            navItems.forEach(n => n.classList.remove('active'));
+            item.classList.add('active');
+
+            const label = item.querySelector('span')?.textContent.trim();
+            if (label === 'My Tasks') {
+                currentFilters.assignee = 'arjun'; // Filter tasks assigned to Arjun
+                const filterAssignee = document.getElementById('filter-assignee');
+                if (filterAssignee) filterAssignee.value = 'arjun';
+            } else {
+                currentFilters.assignee = '';
+                const filterAssignee = document.getElementById('filter-assignee');
+                if (filterAssignee) filterAssignee.value = '';
+            }
+            applyActiveFilters();
+        });
+    });
+}
+
+/**
+ * Keyboard shortcuts listener (Cmd+K / Ctrl+K for search)
+ */
+function initKeyboardShortcuts() {
+    document.addEventListener('keydown', (e) => {
+        if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+            e.preventDefault();
+            const searchInput = document.getElementById('desktop-search');
+            if (searchInput) searchInput.focus();
+        }
+    });
+}
+
+/**
  * Orchestrates form behaviors, handling opening overlays, setting constraints, and closing visibility toggles
  */
 function initModalEventListeners() {
@@ -131,12 +217,11 @@ function initModalEventListeners() {
     const titleErrorLabel = document.getElementById('title-error-msg');
     const dateErrorLabel = document.getElementById('date-error-msg');
 
-    // Helper functions to control modal display states
-    const openTaskModal = () => {
+    const openTaskModal = (colId = 'todo') => {
         if (!taskModalOverlay) return;
+        targetColumnId = colId;
         taskModalOverlay.classList.add('active');
         if (taskDueDateInputField) {
-            // Apply minimum standard date limits dynamically to prevent past items choice rules
             taskDueDateInputField.min = new Date().toISOString().split('T')[0];
         }
     };
@@ -151,15 +236,14 @@ function initModalEventListeners() {
 
     // Global click delegate listener to capture clicks on dynamic "Add Task" buttons
     document.addEventListener('click', (e) => {
-        if (e.target.classList.contains('btn-add-task-trigger') || 
-            e.target.classList.contains('btn-column-add-task') || 
-            e.target.closest('.btn-add-task-trigger') || 
-            e.target.closest('.btn-column-add-task')) {
-            openTaskModal();
+        const trigger = e.target.closest('.btn-add-task-trigger') || e.target.closest('.btn-column-add-task');
+        if (trigger) {
+            const columnWrapper = trigger.closest('.board-column');
+            const colId = columnWrapper ? columnWrapper.getAttribute('data-status') : 'todo';
+            openTaskModal(colId);
         }
     });
 
-    // Wire standard native click hooks onto control targets safely
     if (modalCloseButton) modalCloseButton.addEventListener('click', closeTaskModal);
     if (modalCancelButton) modalCancelButton.addEventListener('click', closeTaskModal);
     
@@ -169,12 +253,11 @@ function initModalEventListeners() {
         });
     }
 
-    // Capture submissions internally
+    // Form Submission Handler
     if (taskCreationFormDom) {
         taskCreationFormDom.addEventListener('submit', (e) => {
             e.preventDefault();
             
-            // Collect fields values
             const titleValue = document.getElementById('task-title-input')?.value.trim();
             const descValue = document.getElementById('task-desc-input')?.value.trim();
             const assigneeValue = document.getElementById('task-assignee')?.value;
@@ -183,7 +266,6 @@ function initModalEventListeners() {
 
             let isInputValid = true;
 
-            // Simple basic input validations engines
             if (!titleValue) {
                 titleErrorLabel?.classList.add('visible');
                 isInputValid = false;
@@ -199,38 +281,33 @@ function initModalEventListeners() {
             }
 
             if (isInputValid) {
-                // Parse date formatting quickly
                 const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
                 const dateSegments = dateValue.split('-');
                 const formattedDisplayDate = `${monthNames[parseInt(dateSegments[1]) - 1]} ${dateSegments[2]}`;
 
-                // Construct state model modifications object parameters
                 const generatedNewTaskObj = {
-                    id: tasks.length + 1,
+                    id: Date.now(),
                     title: titleValue,
                     desc: descValue || 'No description provided.',
-                    tag: priorityValue === 'High' ? 'design' : 'development',
+                    tag: priorityValue === 'High' ? 'design' : (priorityValue === 'Medium' ? 'development' : 'marketing'),
                     assignees: assigneeValue ? [assigneeValue] : ['arjun'],
                     date: formattedDisplayDate,
-                    status: 'todo', // Appends new cards systematically into default To Do stream index entries
+                    status: targetColumnId || 'todo',
                     priority: priorityValue
                 };
 
-                // Push onto state array directly
                 tasks.push(generatedNewTaskObj);
 
-                // Prepend event activity history logger items lists
-                activities.unshift({
-                    id: activities.length + 1,
-                    userId: generatedNewTaskObj.assignees[0],
-                    action: 'created task',
-                    target: `“${generatedNewTaskObj.title}”`,
-                    extra: `under TODO column workflow entry`,
-                    time: 'Just now',
-                    icon: 'fa-plus'
-                });
+                addActivity(
+                    'created task',
+                    `“${generatedNewTaskObj.title}”`,
+                    `under ${generatedNewTaskObj.status.toUpperCase()}`,
+                    'fa-plus',
+                    generatedNewTaskObj.assignees[0]
+                );
 
-                // Trigger dynamic component refresh loops across global screens structures layers
+                saveState();
+
                 renderDesktopBoard();
                 renderStats();
                 renderDesktopActivities();
