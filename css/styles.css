@@ -153,6 +153,81 @@ body.dark-theme .stat-card {
     cursor: pointer;
 }
 
+/* User Profile Dropdown Menu */
+.user-profile-dropdown {
+    position: absolute;
+    top: 45px;
+    right: 0;
+    width: 230px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-lg);
+    z-index: 500;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    color: var(--text-main);
+}
+
+.user-info-header {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.user-name {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+.user-email {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.user-role-badge {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: #0d9488;
+    background: #ccfbf1;
+    padding: 2px 6px;
+    border-radius: 4px;
+    align-self: flex-start;
+    margin-top: 4px;
+}
+
+body.dark-theme .user-role-badge {
+    background: #115e59;
+    color: #5eead4;
+}
+
+.dropdown-divider {
+    height: 1px;
+    background: var(--border-subtle);
+    margin: 4px 0;
+}
+
+.btn-logout {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: none;
+    border: none;
+    color: var(--priority-high);
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 6px 0;
+    transition: opacity 0.2s ease;
+}
+
+.btn-logout:hover {
+    opacity: 0.8;
+}
+
 :root {
     --transition-fast: 0.2s ease;
 }

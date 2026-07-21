@@ -3,9 +3,10 @@
 // =========================================================================
 import { initDragAndDrop } from './modules/dragDrop.js';
 import { initFilteringSystem, currentFilters, applyActiveFilters } from './modules/filter.js';
+import { getCurrentUser, loginUser, registerUser, logoutUser } from './modules/auth.js';
 import { 
     projects, members, tasks, activities, activeProjectId, setActiveProjectId,
-    deleteTask, updateTask, saveState, addActivity, addMember, addProject, formatDisplayDate 
+    deleteTask, updateTask, saveState, addActivity, addMember, addProject, formatDisplayDate, syncCurrentUserMember 
 } from './modules/state.js';
 
 import { renderDesktopBoard, renderStats } from './components/board.js';
@@ -18,13 +19,16 @@ let taskToDeleteId = null;
  * Initializes the entire application state and binds global event triggers
  */
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. Load Saved Theme Preference
+    // 1. Theme Controller
     initThemeController();
 
-    // 2. Core Structural Layout Renderers
+    // 2. Auth Session Controller
+    initAuthController();
+
+    // 3. Core Structural Layout Renderers
     refreshAllUI();
 
-    // 3. Bind Global Interactivity Actions
+    // 4. Bind Global Interactivity Actions
     initGlobalInteractivity();
     initModalEventListeners();
     initMemberAndProjectModals();
@@ -39,6 +43,8 @@ document.addEventListener('DOMContentLoaded', () => {
  * Master UI refresher function
  */
 export function refreshAllUI() {
+    syncCurrentUserMember();
+    updateHeaderUserProfile();
     renderSidebarProjects();
     renderSidebarTeam();
     renderAssigneeFormOptions();
@@ -48,6 +54,157 @@ export function refreshAllUI() {
     renderStats();
     renderDesktopActivities();
     renderMobileBoard();
+}
+
+/**
+ * Authentication & User Profile Controller
+ */
+function initAuthController() {
+    const authModal = document.getElementById('auth-modal');
+    const tabLoginBtn = document.getElementById('tab-login-btn');
+    const tabSignupBtn = document.getElementById('tab-signup-btn');
+    const loginForm = document.getElementById('login-form');
+    const signupForm = document.getElementById('signup-form');
+    const fillDemoBtn = document.getElementById('btn-fill-demo-login');
+    const logoutBtn = document.getElementById('btn-logout');
+    const userAvatarBtn = document.getElementById('current-user-avatar-btn');
+    const userProfileMenu = document.getElementById('user-profile-menu');
+
+    // 1. Session check on launch
+    const currentUser = getCurrentUser();
+    if (!currentUser) {
+        if (authModal) authModal.classList.add('active');
+    } else {
+        if (authModal) authModal.classList.remove('active');
+    }
+
+    // 2. Tab switching
+    if (tabLoginBtn && tabSignupBtn) {
+        tabLoginBtn.addEventListener('click', () => {
+            tabLoginBtn.classList.add('active');
+            tabLoginBtn.style.background = 'var(--bg-card)';
+            tabLoginBtn.style.color = 'var(--text-main)';
+            tabSignupBtn.classList.remove('active');
+            tabSignupBtn.style.background = 'transparent';
+            tabSignupBtn.style.color = 'var(--text-muted)';
+            if (loginForm) loginForm.style.display = 'block';
+            if (signupForm) signupForm.style.display = 'none';
+        });
+
+        tabSignupBtn.addEventListener('click', () => {
+            tabSignupBtn.classList.add('active');
+            tabSignupBtn.style.background = 'var(--bg-card)';
+            tabSignupBtn.style.color = 'var(--text-main)';
+            tabLoginBtn.classList.remove('active');
+            tabLoginBtn.style.background = 'transparent';
+            tabLoginBtn.style.color = 'var(--text-muted)';
+            if (signupForm) signupForm.style.display = 'block';
+            if (loginForm) loginForm.style.display = 'none';
+        });
+    }
+
+    // 3. Demo Login Fill Button
+    if (fillDemoBtn) {
+        fillDemoBtn.addEventListener('click', () => {
+            const result = loginUser('admin@nexboard.com', 'admin123');
+            if (result.success) {
+                if (authModal) authModal.classList.remove('active');
+                showToast(`Welcome back, ${result.user.name}!`, 'success');
+                refreshAllUI();
+            }
+        });
+    }
+
+    // 4. Login Form Submit
+    if (loginForm) {
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = document.getElementById('login-email')?.value;
+            const pass = document.getElementById('login-password')?.value;
+            const errorMsg = document.getElementById('login-error-msg');
+
+            const result = loginUser(email, pass);
+            if (result.success) {
+                if (errorMsg) errorMsg.style.display = 'none';
+                if (authModal) authModal.classList.remove('active');
+                showToast(`Welcome back, ${result.user.name}!`, 'success');
+                refreshAllUI();
+            } else {
+                if (errorMsg) {
+                    errorMsg.textContent = result.message;
+                    errorMsg.style.display = 'block';
+                }
+            }
+        });
+    }
+
+    // 5. Sign Up Form Submit
+    if (signupForm) {
+        signupForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const name = document.getElementById('signup-name')?.value.trim();
+            const email = document.getElementById('signup-email')?.value;
+            const pass = document.getElementById('signup-password')?.value;
+            const role = document.getElementById('signup-role')?.value;
+            const errorMsg = document.getElementById('signup-error-msg');
+
+            const result = registerUser(name, email, pass, role);
+            if (result.success) {
+                if (errorMsg) errorMsg.style.display = 'none';
+                if (authModal) authModal.classList.remove('active');
+                showToast(`Account created! Welcome, ${result.user.name}!`, 'success');
+                refreshAllUI();
+            } else {
+                if (errorMsg) {
+                    errorMsg.textContent = result.message;
+                    errorMsg.style.display = 'block';
+                }
+            }
+        });
+    }
+
+    // 6. User Avatar Profile Menu Dropdown Toggle
+    if (userAvatarBtn && userProfileMenu) {
+        userAvatarBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const isVisible = userProfileMenu.style.display === 'flex';
+            userProfileMenu.style.display = isVisible ? 'none' : 'flex';
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!userProfileMenu.contains(e.target) && !userAvatarBtn.contains(e.target)) {
+                userProfileMenu.style.display = 'none';
+            }
+        });
+    }
+
+    // 7. Logout Button Action
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', () => {
+            logoutUser();
+            if (userProfileMenu) userProfileMenu.style.display = 'none';
+            if (authModal) authModal.classList.add('active');
+            showToast('Logged out successfully', 'info');
+        });
+    }
+}
+
+/**
+ * Updates top header profile avatar, name, and email details
+ */
+function updateHeaderUserProfile() {
+    const curUser = getCurrentUser();
+    const avatarImg = document.getElementById('header-user-avatar');
+    const nameEl = document.getElementById('menu-user-name');
+    const emailEl = document.getElementById('menu-user-email');
+    const roleEl = document.getElementById('menu-user-role');
+
+    if (curUser) {
+        if (avatarImg) avatarImg.src = curUser.avatar;
+        if (nameEl) nameEl.textContent = curUser.name;
+        if (emailEl) emailEl.textContent = curUser.email;
+        if (roleEl) roleEl.textContent = curUser.role;
+    }
 }
 
 /**
@@ -212,7 +369,6 @@ export function renderDesktopActivities() {
  * Attaches document-level delegators for editing, deleting cards, and mobile quick moves
  */
 function initGlobalInteractivity() {
-    // 1. Task Card Delete Button Handler (Triggers Confirmation Modal)
     document.addEventListener('click', (e) => {
         const deleteBtn = e.target.closest('.btn-card-delete');
         if (deleteBtn) {
@@ -226,7 +382,6 @@ function initGlobalInteractivity() {
         }
     });
 
-    // 2. Task Card Edit Button Handler
     document.addEventListener('click', (e) => {
         const editBtn = e.target.closest('.btn-card-edit');
         if (editBtn) {
@@ -238,7 +393,6 @@ function initGlobalInteractivity() {
         }
     });
 
-    // 3. Mobile Status Select Dropdown Change Listener
     document.addEventListener('change', (e) => {
         if (e.target.classList.contains('mobile-status-select')) {
             const taskId = parseInt(e.target.getAttribute('data-task-id'), 10);
@@ -254,7 +408,6 @@ function initGlobalInteractivity() {
         }
     });
 
-    // 4. Sidebar Nav Tabs Switcher
     const navItems = document.querySelectorAll('.sidebar-nav .nav-item');
     navItems.forEach(item => {
         item.addEventListener('click', (e) => {
@@ -264,10 +417,11 @@ function initGlobalInteractivity() {
 
             const label = item.querySelector('span')?.textContent.trim();
             if (label === 'My Tasks') {
-                const firstUser = Object.keys(members)[0] || 'admin';
-                currentFilters.assignee = firstUser;
+                const curUser = getCurrentUser();
+                const activeId = curUser ? curUser.id : (Object.keys(members)[0] || 'admin');
+                currentFilters.assignee = activeId;
                 const filterAssignee = document.getElementById('filter-assignee');
-                if (filterAssignee) filterAssignee.value = firstUser;
+                if (filterAssignee) filterAssignee.value = activeId;
             } else {
                 currentFilters.assignee = '';
                 const filterAssignee = document.getElementById('filter-assignee');
@@ -278,9 +432,6 @@ function initGlobalInteractivity() {
     });
 }
 
-/**
- * Delete Confirmation Modal Controller
- */
 function initDeleteConfirmationModal() {
     const confirmModal = document.getElementById('confirm-delete-modal');
     const cancelBtn = document.getElementById('btn-cancel-delete');
@@ -306,9 +457,6 @@ function initDeleteConfirmationModal() {
     }
 }
 
-/**
- * Keyboard shortcuts listener (Cmd+K / Ctrl+K for search)
- */
 function initKeyboardShortcuts() {
     document.addEventListener('keydown', (e) => {
         if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
@@ -319,9 +467,6 @@ function initKeyboardShortcuts() {
     });
 }
 
-/**
- * Dynamic Add Member and Add Project Modals initialization
- */
 function initMemberAndProjectModals() {
     const addMemberModal = document.getElementById('add-member-modal');
     const closeMemberBtn = document.getElementById('btn-close-member-modal');
@@ -382,9 +527,6 @@ function initMemberAndProjectModals() {
     }
 }
 
-/**
- * Pre-populates and opens Task Modal for editing an existing task
- */
 function openTaskModalForEdit(taskId) {
     const task = tasks.find(t => t.id === taskId);
     if (!task) return;
@@ -407,9 +549,6 @@ function openTaskModalForEdit(taskId) {
     if (taskModalOverlay) taskModalOverlay.classList.add('active');
 }
 
-/**
- * Orchestrates task creation and edit modal form behaviors
- */
 function initModalEventListeners() {
     const taskModalOverlay = document.getElementById('add-task-modal');
     const modalCloseButton = document.getElementById('btn-close-modal');
@@ -428,6 +567,10 @@ function initModalEventListeners() {
         document.getElementById('task-edit-id').value = '';
         taskCreationFormDom.reset();
         document.getElementById('task-status-select').value = colId;
+        const curUser = getCurrentUser();
+        if (curUser) {
+            document.getElementById('task-assignee').value = curUser.id;
+        }
         if (modalHeading) modalHeading.textContent = 'Create New Task';
         if (submitBtn) submitBtn.textContent = 'Create Task';
         taskModalOverlay.classList.add('active');
@@ -491,10 +634,10 @@ function initModalEventListeners() {
 
             if (isInputValid) {
                 const formattedDisplayDate = formatDisplayDate(dateValue);
-                const defaultUser = Object.keys(members)[0] || 'admin';
+                const curUser = getCurrentUser();
+                const defaultUser = curUser ? curUser.id : (Object.keys(members)[0] || 'admin');
 
                 if (editIdVal) {
-                    // Update existing task
                     const taskIdNum = parseInt(editIdVal, 10);
                     updateTask({
                         id: taskIdNum,
@@ -509,7 +652,6 @@ function initModalEventListeners() {
                     });
                     showToast('Task updated successfully', 'success');
                 } else {
-                    // Create new task
                     const generatedNewTaskObj = {
                         id: Date.now(),
                         projectId: activeProjectId,

@@ -1,4 +1,5 @@
 // Central Data Store for NexBoard with Multi-Project & Persistent State Management
+import { getCurrentUser } from './auth.js';
 
 // Default Initial Workspace Seed Data
 const initialProjects = [
@@ -7,7 +8,7 @@ const initialProjects = [
 ];
 
 const initialMembers = {
-    admin: { name: 'Admin', role: 'Owner', avatar: 'https://ui-avatars.com/api/?name=Admin&background=0d9488&color=fff&bold=true', status: 'online' },
+    admin: { name: 'Admin User', role: 'Project Manager', avatar: 'https://ui-avatars.com/api/?name=Admin+User&background=0d9488&color=fff&bold=true', status: 'online' },
     priya: { name: 'Priya Singh', role: 'Designer', avatar: 'https://ui-avatars.com/api/?name=Priya+Singh&background=ec4899&color=fff&bold=true', status: 'online' },
     rohan: { name: 'Rohan Verma', role: 'Developer', avatar: 'https://ui-avatars.com/api/?name=Rohan+Verma&background=3b82f6&color=fff&bold=true', status: 'online' }
 };
@@ -40,7 +41,6 @@ export function setActiveProjectId(id) {
     saveState();
 }
 
-// Load arrays from LocalStorage if available, otherwise use initial seeds
 function loadProjects() {
     try {
         const saved = localStorage.getItem('nexboard_projects');
@@ -53,7 +53,17 @@ function loadProjects() {
 function loadMembers() {
     try {
         const saved = localStorage.getItem('nexboard_members');
-        return saved ? JSON.parse(saved) : initialMembers;
+        const mems = saved ? JSON.parse(saved) : initialMembers;
+        const curUser = getCurrentUser();
+        if (curUser) {
+            mems[curUser.id] = {
+                name: curUser.name,
+                role: curUser.role,
+                avatar: curUser.avatar,
+                status: 'online'
+            };
+        }
+        return mems;
     } catch(e) {
         return initialMembers;
     }
@@ -82,11 +92,22 @@ export let members = loadMembers();
 export let tasks = loadTasks();
 export let activities = loadActivities();
 
-// Sync active project state
 const currentActive = projects.find(p => p.active);
 if (currentActive) activeProjectId = currentActive.id;
 
-// Save state changes to LocalStorage
+export function syncCurrentUserMember() {
+    const curUser = getCurrentUser();
+    if (curUser) {
+        members[curUser.id] = {
+            name: curUser.name,
+            role: curUser.role,
+            avatar: curUser.avatar,
+            status: 'online'
+        };
+        saveState();
+    }
+}
+
 export function saveState() {
     try {
         localStorage.setItem('nexboard_projects', JSON.stringify(projects));
@@ -98,7 +119,6 @@ export function saveState() {
     }
 }
 
-// Helper to format ISO date (YYYY-MM-DD) into display string (e.g. "Jul 28")
 export function formatDisplayDate(isoDateStr) {
     if (!isoDateStr) return 'No Date';
     try {
@@ -113,7 +133,6 @@ export function formatDisplayDate(isoDateStr) {
     }
 }
 
-// Dynamic Statistical Helpers
 export function getProjectProgress(projId = activeProjectId) {
     const projTasks = tasks.filter(t => t.projectId === projId || !t.projectId);
     if (projTasks.length === 0) return 0;
@@ -131,7 +150,6 @@ export function getOverdueCount(projId = activeProjectId) {
     }).length;
 }
 
-// Dynamic Member Addition Helper
 export function addMember(name, role) {
     const id = name.toLowerCase().replace(/[^a-z0-9]/g, '');
     const avatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=random&color=fff&bold=true`;
@@ -148,7 +166,6 @@ export function addMember(name, role) {
     return id;
 }
 
-// Dynamic Project Addition Helper
 export function addProject(name, color = 'redesign') {
     const id = name.toLowerCase().replace(/[^a-z0-9]/g, '');
     projects.forEach(p => p.active = false);
@@ -167,12 +184,13 @@ export function addProject(name, color = 'redesign') {
     return newProj;
 }
 
-// State Mutation Helpers
 export function deleteTask(id) {
     const index = tasks.findIndex(t => t.id === id);
     if (index !== -1) {
         const removed = tasks.splice(index, 1)[0];
-        addActivity('deleted task', `“${removed.title}”`, '', 'fa-trash');
+        const curUser = getCurrentUser();
+        const actorId = curUser ? curUser.id : 'admin';
+        addActivity('deleted task', `“${removed.title}”`, '', 'fa-trash', actorId);
         saveState();
     }
 }
@@ -181,16 +199,19 @@ export function updateTask(updatedTask) {
     const index = tasks.findIndex(t => t.id === updatedTask.id);
     if (index !== -1) {
         tasks[index] = { ...tasks[index], ...updatedTask };
-        addActivity('updated task', `“${updatedTask.title}”`, '', 'fa-pen-to-square');
+        const curUser = getCurrentUser();
+        const actorId = curUser ? curUser.id : 'admin';
+        addActivity('updated task', `“${updatedTask.title}”`, '', 'fa-pen-to-square', actorId);
         saveState();
     }
 }
 
-export function addActivity(action, target, extra = '', icon = 'fa-plus', userId = 'admin') {
-    const defaultUser = Object.keys(members)[0] || 'admin';
+export function addActivity(action, target, extra = '', icon = 'fa-plus', userId = null) {
+    const curUser = getCurrentUser();
+    const actorId = userId || (curUser ? curUser.id : (Object.keys(members)[0] || 'admin'));
     activities.unshift({
         id: activities.length + 1,
-        userId: userId || defaultUser,
+        userId: actorId,
         action: action,
         target: target,
         extra: extra,
