@@ -4,6 +4,7 @@
 
 import { tasks, activities, members } from './state.js';
 import { renderDesktopBoard, renderStats } from '../components/board.js';
+import { renderMobileBoard } from '../components/mobileBoard.js';
 
 /**
  * Initializes Drag and Drop capabilities across all active columns and cards
@@ -119,6 +120,7 @@ function handleDrop(e) {
         // 3. Trigger global render updates cycles smoothly across workspace segments
         renderDesktopBoard();
         renderStats();
+        renderMobileBoard();
         
         // Re-inject the right sidebar logs component updates cleanly
         const activityListContainer = document.getElementById('desktop-activity-list');

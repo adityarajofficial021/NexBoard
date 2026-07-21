@@ -4,6 +4,7 @@
 
 import { tasks } from './state.js';
 import { renderDesktopBoard } from '../components/board.js';
+import { renderMobileBoard } from '../components/mobileBoard.js';
 
 export const currentFilters = {
     searchQuery: '',
@@ -118,4 +119,5 @@ export function getFilteredTasks() {
 
 export function applyActiveFilters() {
     renderDesktopBoard();
+    renderMobileBoard();
 }

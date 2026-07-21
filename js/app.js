@@ -4,10 +4,11 @@
 import { initDragAndDrop } from './modules/dragDrop.js';
 import { initFilteringSystem } from './modules/filter.js';
 // Import central raw data store arrays
-import { projects, members, columns, tasks, activities } from './modules/state.js';
+import { projects, members, tasks, activities } from './modules/state.js';
 
 // Import UI component builders
 import { renderDesktopBoard, renderStats } from './components/board.js';
+import { renderMobileBoard } from './components/mobileBoard.js';
 
 /**
  * Initializes the entire application state and binds global event triggers
@@ -17,13 +18,14 @@ document.addEventListener('DOMContentLoaded', () => {
     renderSidebarProjects();
     renderSidebarTeam();
     renderAssigneeFormOptions();
+    renderFilterAssigneeOptions();
     
     // 2. Main Workspace Dynamic Renderers
     renderDesktopBoard();
     initDragAndDrop();
     renderStats();
     renderDesktopActivities();
-    renderMobileBoardStub(); // Bridge placeholder for responsive view updates
+    renderMobileBoard(); // Dynamic mobile phone layout renderer
     
     // 3. Bind Modal Trigger Interactivity Actions
     initModalEventListeners();
@@ -80,6 +82,19 @@ function renderAssigneeFormOptions() {
 }
 
 /**
+ * Populates assignee choices inside the header filter dropdown panel
+ */
+function renderFilterAssigneeOptions() {
+    const filterAssigneeInput = document.getElementById('filter-assignee');
+    if (!filterAssigneeInput) return;
+
+    filterAssigneeInput.innerHTML = '<option value="">All Assignees</option>' + 
+        Object.entries(members).map(([id, m]) => `
+            <option value="${id}">${m.name}</option>
+        `).join('');
+}
+
+/**
  * Renders the primary log history data arrays within the right sidebar dashboard area
  */
 function renderDesktopActivities() {
@@ -101,25 +116,6 @@ function renderDesktopActivities() {
             </li>
         `;
     }).join('');
-}
-
-/**
- * Minimal configuration logic for tracking the mobile dashboard tab layouts state
- */
-function renderMobileBoardStub() {
-    // Hook placeholder for secondary mobile-layout views synchronization logic
-    const tabsContainer = document.getElementById('mobile-tabs-bar');
-    if (!tabsContainer) return;
-    
-    // Set up click handlers on pre-rendered mobile structural buttons for now
-    document.querySelectorAll('.mobile-column-tab').forEach(tab => {
-        tab.addEventListener('click', (e) => {
-            document.querySelectorAll('.mobile-column-tab').forEach(t => t.classList.remove('active'));
-            const targetedTab = e.currentTarget;
-            targetedTab.classList.add('active');
-            console.log(`Switched layout focus target column index category: ${targetedTab.getAttribute('data-target')}`);
-        });
-    });
 }
 
 /**
@@ -236,7 +232,9 @@ function initModalEventListeners() {
 
                 // Trigger dynamic component refresh loops across global screens structures layers
                 renderDesktopBoard();
+                renderStats();
                 renderDesktopActivities();
+                renderMobileBoard();
                 closeTaskModal();
             }
         });

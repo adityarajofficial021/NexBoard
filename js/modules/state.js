@@ -24,13 +24,39 @@ export const columns = [
 ];
 
 export let tasks = [
+    // Backlog column tasks
     { id: 1, title: 'Market Research', desc: 'Analyze competitors and market trends', tag: 'research', assignees: ['arjun', 'priya'], date: 'May 28', status: 'backlog', priority: '' },
+    { id: 2, title: 'Brand Guidelines', desc: 'Create brand identity guidelines', tag: 'design', assignees: ['priya'], date: 'May 30', status: 'backlog', priority: '' },
+    { id: 3, title: 'Content Strategy', desc: 'Define content plan for the website', tag: 'marketing', assignees: ['arjun'], date: 'Jun 02', status: 'backlog', priority: '' },
+    { id: 4, title: 'SEO Audit', desc: 'Audit current website and SEO issues', tag: 'seo', assignees: ['rohan'], date: 'Jun 04', status: 'backlog', priority: '' },
+    { id: 5, title: 'Competitor Analysis', desc: 'Gather feature lists of main competitors', tag: 'research', assignees: ['rohan'], date: 'Jun 05', status: 'backlog', priority: '' },
+    
+    // To Do column tasks
     { id: 6, title: 'Landing Page Design', desc: 'Design the new landing page', tag: 'design', assignees: ['arjun'], date: 'May 24', status: 'todo', priority: 'Medium' },
+    { id: 7, title: 'Wireframes', desc: 'Create wireframes for all pages', tag: 'design', assignees: ['priya', 'arjun'], date: 'May 26', status: 'todo', priority: 'High' },
+    { id: 8, title: 'Blog Section', desc: 'Design and develop blog section', tag: 'development', assignees: ['arjun'], date: 'May 27', status: 'todo', priority: 'Medium' },
+    { id: 9, title: 'Contact Form', desc: 'Create contact form and validation', tag: 'development', assignees: ['priya'], date: 'May 29', status: 'todo', priority: 'Low' },
+
+    // In Progress column tasks
     { id: 10, title: 'Homepage Development', desc: 'Develop homepage with responsive design', tag: 'development', assignees: ['arjun', 'rohan'], date: 'May 21', status: 'inprogress', priority: '' },
+    { id: 11, title: 'API Integration', desc: 'Integrate backend APIs for the website', tag: 'development', assignees: ['rohan'], date: 'May 23', status: 'inprogress', priority: '' },
+    { id: 12, title: 'Mobile Responsiveness', desc: 'Make all pages mobile friendly', tag: 'design', assignees: ['arjun'], date: 'May 25', status: 'inprogress', priority: '' },
+
+    // Review column tasks
     { id: 13, title: 'Design System', desc: 'Review design system and components', tag: 'design', assignees: ['priya', 'arjun'], date: 'May 20', status: 'review', priority: '' },
-    { id: 15, title: 'Project Setup', desc: 'Initial project setup and configuration', tag: 'setup', assignees: ['rohan'], date: 'May 15', status: 'done', priority: '' }
+    { id: 14, title: 'Content Review', desc: 'Review all content and copy', tag: 'content', assignees: ['sneha'], date: 'May 22', status: 'review', priority: '' },
+
+    // Done column tasks
+    { id: 15, title: 'Project Setup', desc: 'Initial project setup and configuration', tag: 'setup', assignees: ['rohan'], date: 'May 15', status: 'done', priority: '' },
+    { id: 16, title: 'Team Meeting', desc: 'Project kickoff meeting', tag: 'planning', assignees: ['priya', 'rohan'], date: 'May 16', status: 'done', priority: '' },
+    { id: 17, title: 'Requirements Gathering', desc: 'Gather and document requirements', tag: 'planning', assignees: ['sneha'], date: 'May 17', status: 'done', priority: '' },
+    { id: 18, title: 'Logo Design', desc: 'Design new logo for brand', tag: 'design', assignees: ['priya'], date: 'May 18', status: 'done', priority: '' }
 ];
 
 export let activities = [
-    { id: 1, userId: 'arjun', action: 'moved', target: '“Homepage Development”', extra: 'to In Progress', time: '2 min ago', icon: 'fa-arrow-right' }
+    { id: 1, userId: 'arjun', action: 'moved', target: '“Homepage Development”', extra: 'to In Progress', time: '2 min ago', icon: 'fa-arrow-right' },
+    { id: 2, userId: 'priya', action: 'assigned task', target: '“Blog Section”', extra: 'to Rohan Verma', time: '15 min ago', icon: 'fa-user-plus' },
+    { id: 3, userId: 'rohan', action: 'updated due date for', target: '“Mobile Responsiveness”', extra: '', time: '1 hour ago', icon: 'fa-calendar-days' },
+    { id: 4, userId: 'sneha', action: 'moved', target: '“Contact Form”', extra: 'from To Do to In Progress', time: '2 hours ago', icon: 'fa-arrow-right' },
+    { id: 5, userId: 'ankit', action: 'completed', target: '“Project Setup”', extra: 'task', time: '3 hours ago', icon: 'fa-circle-check' }
 ];
