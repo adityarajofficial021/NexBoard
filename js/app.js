@@ -39,12 +39,10 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log("🚀 NexBoard Architecture modular system successfully initialized!");
 });
 
-/**
- * Master UI refresher function
- */
 export function refreshAllUI() {
     syncCurrentUserMember();
     updateHeaderUserProfile();
+    updateMyTasksBadge();
     renderSidebarProjects();
     renderSidebarTeam();
     renderAssigneeFormOptions();
@@ -54,6 +52,28 @@ export function refreshAllUI() {
     renderStats();
     renderDesktopActivities();
     renderMobileBoard();
+}
+
+/**
+ * Calculates and updates the My Tasks navigation badge count dynamically
+ */
+function updateMyTasksBadge() {
+    const badge = document.getElementById('my-tasks-badge');
+    if (!badge) return;
+    const curUser = getCurrentUser();
+    if (!curUser) {
+        badge.style.display = 'none';
+        return;
+    }
+    const userId = curUser.id;
+    // Count active (non-done) tasks assigned to the current user in the active project
+    const count = tasks.filter(t => (t.projectId === activeProjectId || !t.projectId) && t.assignees.includes(userId) && t.status !== 'done').length;
+    if (count > 0) {
+        badge.textContent = count;
+        badge.style.display = 'flex';
+    } else {
+        badge.style.display = 'none';
+    }
 }
 
 /**
