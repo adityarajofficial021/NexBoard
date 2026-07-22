@@ -36,6 +36,12 @@ document.addEventListener('DOMContentLoaded', () => {
     initFilteringSystem();
     initKeyboardShortcuts();
     
+    // 5. Auto update activity times every minute
+    setInterval(() => {
+        renderDesktopActivities();
+        renderMobileRecentActivity();
+    }, 60000);
+
     console.log("🚀 NexBoard Architecture modular system successfully initialized!");
 });
 

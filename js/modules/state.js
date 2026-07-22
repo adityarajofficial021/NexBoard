@@ -81,7 +81,22 @@ function loadTasks() {
 function loadActivities() {
     try {
         const saved = localStorage.getItem('nexboard_activities');
-        return saved ? JSON.parse(saved) : initialActivities;
+        let parsed = saved ? JSON.parse(saved) : initialActivities;
+        
+        let updated = false;
+        parsed = parsed.map(act => {
+            if (!act.timestamp) {
+                act.timestamp = new Date().toISOString();
+                updated = true;
+            }
+            return act;
+        });
+        
+        if (updated) {
+            localStorage.setItem('nexboard_activities', JSON.stringify(parsed));
+        }
+        
+        return parsed;
     } catch(e) {
         return initialActivities;
     }
@@ -134,32 +149,56 @@ export function formatDisplayDate(isoDateStr) {
 }
 
 export function formatRelativeTime(isoString) {
-    if (!isoString) return 'Just now';
+    if (!isoString) return 'Unknown time';
     try {
         const date = new Date(isoString);
         if (isNaN(date.getTime())) {
-            return isoString;
+            return 'Unknown time';
         }
         const now = new Date();
         const diffMs = now - date;
         const diffSecs = Math.floor(diffMs / 1000);
-        const diffMins = Math.floor(diffSecs / 60);
-        const diffHours = Math.floor(diffMins / 60);
-        const diffDays = Math.floor(diffHours / 24);
+        if (diffSecs < 0) return 'Just now';
 
-        if (diffSecs < 60) {
+        if (diffSecs < 30) {
             return 'Just now';
-        } else if (diffMins < 60) {
-            return `${diffMins} min${diffMins > 1 ? 's' : ''} ago`;
-        } else if (diffHours < 24) {
-            return `${diffHours} hr${diffHours > 1 ? 's' : ''} ago`;
-        } else if (diffDays < 7) {
-            return `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
-        } else {
-            return date.toLocaleDateString();
         }
+        if (diffSecs < 60) {
+            return '30 seconds ago';
+        }
+
+        const diffMins = Math.floor(diffSecs / 60);
+        if (diffMins < 60) {
+            return `${diffMins} minute${diffMins > 1 ? 's' : ''} ago`;
+        }
+
+        const diffHours = Math.floor(diffMins / 60);
+        if (diffHours < 24) {
+            return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
+        }
+
+        const diffDays = Math.floor(diffHours / 24);
+        if (diffDays === 1) {
+            return 'Yesterday';
+        }
+        if (diffDays < 7) {
+            return `${diffDays} days ago`;
+        }
+
+        const diffWeeks = Math.floor(diffDays / 7);
+        if (diffWeeks < 4.35) {
+            return `${diffWeeks} week${diffWeeks > 1 ? 's' : ''} ago`;
+        }
+
+        const diffMonths = Math.floor(diffDays / 30.44);
+        if (diffMonths < 12) {
+            return `${diffMonths} month${diffMonths > 1 ? 's' : ''} ago`;
+        }
+
+        const diffYears = Math.floor(diffDays / 365.25);
+        return `${diffYears} year${diffYears > 1 ? 's' : ''} ago`;
     } catch(e) {
-        return 'Just now';
+        return 'Unknown time';
     }
 }
 
