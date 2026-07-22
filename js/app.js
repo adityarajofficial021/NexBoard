@@ -6,7 +6,7 @@ import { initFilteringSystem, currentFilters, applyActiveFilters } from './modul
 import { getCurrentUser, loginUser, registerUser, logoutUser } from './modules/auth.js';
 import { 
     projects, members, tasks, activities, activeProjectId, setActiveProjectId,
-    deleteTask, updateTask, saveState, addActivity, addMember, addProject, formatDisplayDate, syncCurrentUserMember 
+    deleteTask, updateTask, saveState, addActivity, addMember, addProject, formatDisplayDate, syncCurrentUserMember, formatRelativeTime 
 } from './modules/state.js';
 
 import { renderDesktopBoard, renderStats } from './components/board.js';
@@ -353,6 +353,7 @@ export function renderDesktopActivities() {
     activityListContainer.innerHTML = activities.map(act => {
         const m = members[act.userId];
         if (!m) return '';
+        const timeDisplay = formatRelativeTime(act.timestamp || act.time);
         return `
             <li class="activity-item" data-activity-id="${act.id}">
                 <img src="${m.avatar}" alt="${m.name}" class="activity-user-avatar">
@@ -360,11 +361,52 @@ export function renderDesktopActivities() {
                     <p class="activity-text">
                         <span class="act-name">${m.name}</span> ${act.action} <span class="act-target">${act.target}</span> ${act.extra}
                     </p>
-                    <span class="activity-time">${act.time}</span>
+                    <span class="activity-time">${timeDisplay}</span>
                 </div>
             </li>
         `;
     }).join('');
+}
+
+/**
+ * Handles synchronized navigation state switching for desktop and mobile views
+ */
+export function switchNavigationTab(label) {
+    // 1. Sync desktop sidebar nav items
+    const navItems = document.querySelectorAll('.sidebar-nav .nav-item');
+    navItems.forEach(item => {
+        const text = item.querySelector('span')?.textContent.trim();
+        if (text === label) {
+            item.classList.add('active');
+        } else {
+            item.classList.remove('active');
+        }
+    });
+
+    // 2. Sync mobile bottom nav items
+    const mobileNavItems = document.querySelectorAll('.mobile-bottom-nav .mobile-nav-btn');
+    mobileNavItems.forEach(item => {
+        const text = item.querySelector('span')?.textContent.trim();
+        if (text === label) {
+            item.classList.add('active');
+        } else {
+            item.classList.remove('active');
+        }
+    });
+
+    // 3. Apply Assignee filter
+    if (label === 'My Tasks') {
+        const curUser = getCurrentUser();
+        const activeId = curUser ? curUser.id : (Object.keys(members)[0] || 'admin');
+        currentFilters.assignee = activeId;
+        const filterAssignee = document.getElementById('filter-assignee');
+        if (filterAssignee) filterAssignee.value = activeId;
+    } else {
+        currentFilters.assignee = '';
+        const filterAssignee = document.getElementById('filter-assignee');
+        if (filterAssignee) filterAssignee.value = '';
+    }
+    applyActiveFilters();
 }
 
 /**
@@ -410,26 +452,23 @@ function initGlobalInteractivity() {
         }
     });
 
+    // Desktop sidebar nav click listener
     const navItems = document.querySelectorAll('.sidebar-nav .nav-item');
     navItems.forEach(item => {
         item.addEventListener('click', (e) => {
             e.preventDefault();
-            navItems.forEach(n => n.classList.remove('active'));
-            item.classList.add('active');
-
             const label = item.querySelector('span')?.textContent.trim();
-            if (label === 'My Tasks') {
-                const curUser = getCurrentUser();
-                const activeId = curUser ? curUser.id : (Object.keys(members)[0] || 'admin');
-                currentFilters.assignee = activeId;
-                const filterAssignee = document.getElementById('filter-assignee');
-                if (filterAssignee) filterAssignee.value = activeId;
-            } else {
-                currentFilters.assignee = '';
-                const filterAssignee = document.getElementById('filter-assignee');
-                if (filterAssignee) filterAssignee.value = '';
-            }
-            applyActiveFilters();
+            switchNavigationTab(label);
+        });
+    });
+
+    // Mobile bottom nav click listener
+    const mobileNavItems = document.querySelectorAll('.mobile-bottom-nav .mobile-nav-btn');
+    mobileNavItems.forEach(item => {
+        item.addEventListener('click', (e) => {
+            e.preventDefault();
+            const label = item.querySelector('span')?.textContent.trim();
+            switchNavigationTab(label);
         });
     });
 }

@@ -2,7 +2,7 @@
 // NexBoard - Mobile Layout Rendering Component Module
 // =========================================================================
 
-import { tasks, columns, members, activities, activeProjectId } from '../modules/state.js';
+import { tasks, columns, members, activities, activeProjectId, formatRelativeTime } from '../modules/state.js';
 import { getFilteredTasks } from '../modules/filter.js';
 
 let activeMobileTab = 'todo';
@@ -138,13 +138,15 @@ export function renderMobileRecentActivity() {
     const m = members[recent.userId];
     if (!m) return;
 
+    const timeDisplay = formatRelativeTime(recent.timestamp || recent.time);
+
     cardEl.innerHTML = `
         <div class="mobile-act-icon-box"><i class="fa-solid ${recent.icon || 'fa-arrow-right'}"></i></div>
         <div class="mobile-act-body">
             <p class="mobile-act-text">
                 <span class="bold">${m.name}</span> ${recent.action} <span class="status-blue">${recent.target}</span> ${recent.extra}
             </p>
-            <span class="mobile-act-time">${recent.time}</span>
+            <span class="mobile-act-time">${timeDisplay}</span>
         </div>
         <div class="mobile-act-avatar">
             <img src="${m.avatar}" alt="${m.name}">

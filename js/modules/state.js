@@ -29,7 +29,7 @@ const initialTasks = [
 ];
 
 const initialActivities = [
-    { id: 1, userId: 'admin', action: 'initialized workspace', target: '“Website Redesign”', extra: '', time: 'Just now', icon: 'fa-square-check' }
+    { id: 1, userId: 'admin', action: 'initialized workspace', target: '“Website Redesign”', extra: '', timestamp: new Date(Date.now() - 60000).toISOString(), icon: 'fa-square-check' }
 ];
 
 // Active Project State Identifier
@@ -133,6 +133,33 @@ export function formatDisplayDate(isoDateStr) {
     }
 }
 
+export function formatRelativeTime(isoString) {
+    if (!isoString) return 'Just now';
+    try {
+        const date = new Date(isoString);
+        const now = new Date();
+        const diffMs = now - date;
+        const diffSecs = Math.floor(diffMs / 1000);
+        const diffMins = Math.floor(diffSecs / 60);
+        const diffHours = Math.floor(diffMins / 60);
+        const diffDays = Math.floor(diffHours / 24);
+
+        if (diffSecs < 60) {
+            return 'Just now';
+        } else if (diffMins < 60) {
+            return `${diffMins} min${diffMins > 1 ? 's' : ''} ago`;
+        } else if (diffHours < 24) {
+            return `${diffHours} hr${diffHours > 1 ? 's' : ''} ago`;
+        } else if (diffDays < 7) {
+            return `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
+        } else {
+            return date.toLocaleDateString();
+        }
+    } catch(e) {
+        return 'Just now';
+    }
+}
+
 export function getProjectProgress(projId = activeProjectId) {
     const projTasks = tasks.filter(t => t.projectId === projId || !t.projectId);
     if (projTasks.length === 0) return 0;
@@ -215,7 +242,7 @@ export function addActivity(action, target, extra = '', icon = 'fa-plus', userId
         action: action,
         target: target,
         extra: extra,
-        time: 'Just now',
+        timestamp: new Date().toISOString(),
         icon: icon
     });
     saveState();
