@@ -369,7 +369,7 @@ body {
     gap: 16px;
 }
 
-.btn-filter, .group-selector {
+.btn-filter {
     background: none;
     border: 1px solid rgba(255, 255, 255, 0.2);
     color: #ffffff;
@@ -384,7 +384,7 @@ body {
     transition: var(--transition-fast);
 }
 
-.btn-filter:hover, .group-selector:hover {
+.btn-filter:hover {
     background-color: rgba(255, 255, 255, 0.08);
 }
 
@@ -405,29 +405,6 @@ body {
 
 .btn-primary:hover {
     background-color: #0f766e; /* Teal 700 */
-}
-
-.notification-bell {
-    position: relative;
-    font-size: 1.15rem;
-    cursor: pointer;
-    padding: 4px;
-}
-
-.notification-badge {
-    position: absolute;
-    top: -2px;
-    right: -2px;
-    background-color: var(--priority-high);
-    color: #ffffff;
-    font-size: 0.65rem;
-    font-weight: 700;
-    width: 15px;
-    height: 15px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
 }
 
 .user-profile {
@@ -1214,29 +1191,6 @@ body {
     font-size: 0.72rem;
     color: var(--text-light);
 }
-
-.btn-view-all-activity {
-    margin-top: auto;
-    background-color: var(--bg-sidebar);
-    border: 1px solid var(--border-subtle);
-    color: var(--text-muted);
-    font-size: 0.82rem;
-    font-weight: 600;
-    padding: 10px;
-    border-radius: var(--radius-sm);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    transition: var(--transition-fast);
-    width: 100%;
-}
-
-.btn-view-all-activity:hover {
-    background-color: #e2e8f0;
-    color: var(--text-main);
-}
 /* ---------------------------------------------------- */
 /* ADD TASK MODAL OVERLAY STYLING */
 /* ---------------------------------------------------- */
@@ -1455,12 +1409,6 @@ body {
         gap: 14px;
     }
 
-    .mobile-menu-icon {
-        font-size: 1.25rem;
-        color: var(--text-main);
-        cursor: pointer;
-    }
-
     .mobile-brand {
         display: flex;
         align-items: center;
@@ -1492,35 +1440,6 @@ body {
         gap: 16px;
     }
 
-    .mobile-header-btn {
-        font-size: 1.15rem;
-        color: var(--text-main);
-        cursor: pointer;
-    }
-
-    .mobile-notif-btn {
-        position: relative;
-        font-size: 1.15rem;
-        color: var(--text-main);
-        cursor: pointer;
-    }
-
-    .mobile-notif-badge {
-        position: absolute;
-        top: -3px;
-        right: -3px;
-        background-color: #ef4444;
-        color: #ffffff;
-        font-size: 0.6rem;
-        font-weight: 700;
-        width: 14px;
-        height: 14px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
     .mobile-user-avatar {
         position: relative;
         width: 30px;
@@ -1532,17 +1451,6 @@ body {
         height: 100%;
         border-radius: 50%;
         object-fit: cover;
-    }
-
-    .mobile-user-status {
-        position: absolute;
-        bottom: 0;
-        right: 0;
-        width: 8px;
-        height: 8px;
-        border-radius: 50%;
-        background-color: #10b981;
-        border: 1.5px solid #ffffff;
     }
 
     /* MOBILE COLUMNS HORIZONTAL TABS SWITCHER */
@@ -1739,14 +1647,6 @@ body {
         font-weight: 700;
         color: var(--text-main);
     }
-
-    .mobile-view-all-link {
-        font-size: 0.8rem;
-        font-weight: 600;
-        color: #6366f1;
-        text-decoration: none;
-    }
-
     .mobile-activity-card {
         background-color: #ffffff;
         border: 1px solid var(--border-subtle);

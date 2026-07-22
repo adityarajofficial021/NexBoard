@@ -16,13 +16,11 @@
         
         <!-- TOP NAVBAR -->
         <header class="desktop-header">
-            <!-- Left brand section -->
             <!-- Brand logo -->
             <div class="header-left">
                 <div class="brand-logo">
                     <i class="fa-solid fa-square-check"></i>
                     <span class="brand-name">NexBoard</span>
-                    <i class="fa-solid fa-chevron-down dropdown-arrow"></i>
                 </div>
             </div>
 
@@ -82,17 +80,7 @@
                     </div>
                 </div>
 
-                <div class="group-selector">
-                    <span>Group: None</span>
-                    <i class="fa-solid fa-chevron-down"></i>
-                </div>
                 <button class="btn-primary btn-add-task-trigger"><i class="fa-solid fa-plus"></i> Add Task</button>
-                
-                <!-- Notification bell -->
-                <div class="notification-bell">
-                    <i class="fa-regular fa-bell"></i>
-                    <span class="notification-badge">3</span>
-                </div>
 
                 <!-- User Profile Dropdown Container -->
                 <div class="user-profile-wrapper" style="position: relative;">
@@ -129,23 +117,6 @@
                         <i class="fa-solid fa-check-double"></i>
                         <span>My Tasks</span>
                         <span class="nav-badge">8</span>
-                    </a>
-                    <a href="#" class="nav-item">
-                        <i class="fa-solid fa-inbox"></i>
-                        <span>Inbox</span>
-                        <span class="nav-badge">4</span>
-                    </a>
-                    <a href="#" class="nav-item">
-                        <i class="fa-regular fa-calendar-days"></i>
-                        <span>Calendar</span>
-                    </a>
-                    <a href="#" class="nav-item">
-                        <i class="fa-solid fa-chart-gantt"></i>
-                        <span>Timeline</span>
-                    </a>
-                    <a href="#" class="nav-item">
-                        <i class="fa-regular fa-chart-bar"></i>
-                        <span>Reports</span>
                     </a>
                 </nav>
 
@@ -204,11 +175,7 @@
                     </ul>
                 </div>
 
-                <!-- View All Activity button -->
-                <button class="btn-view-all-activity">
-                    View All Activity <i class="fa-solid fa-arrow-right"></i>
-                </button>
-            </aside>
+             </aside>
         </div>
     </div>
 
@@ -218,22 +185,14 @@
         <!-- MOBILE HEADER -->
         <header class="mobile-header">
             <div class="mobile-header-left">
-                <i class="fa-solid fa-bars mobile-menu-icon"></i>
                 <div class="mobile-brand">
                     <span class="mobile-brand-icon-wrapper"><i class="fa-solid fa-square-check"></i></span>
                     <span class="mobile-brand-title">NexBoard</span>
                 </div>
             </div>
             <div class="mobile-header-right">
-                <i class="fa-solid fa-magnifying-glass mobile-header-btn"></i>
-                <i class="fa-solid fa-arrow-down-wide-short mobile-header-btn"></i>
-                <div class="mobile-notif-btn">
-                    <i class="fa-regular fa-bell"></i>
-                    <span class="mobile-notif-badge">3</span>
-                </div>
                 <div class="mobile-user-avatar">
-                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&h=100&q=80" alt="User">
-                    <span class="mobile-user-status"></span>
+                    <img src="https://ui-avatars.com/api/?name=Admin&background=0d9488&color=fff&bold=true" alt="User" id="mobile-user-avatar-img">
                 </div>
             </div>
         </header>
@@ -269,7 +228,6 @@
             <div class="mobile-recent-activity-panel">
                 <div class="mobile-activity-header">
                     <span class="mobile-act-header-title">Recent Activity</span>
-                    <a href="#" class="mobile-view-all-link">View All</a>
                 </div>
                 <div class="mobile-activity-card" id="mobile-recent-activity-card">
                     <!-- Recent action rendered dynamically by JS -->
@@ -292,14 +250,6 @@
             <div class="mobile-floating-btn btn-add-task-trigger">
                 <i class="fa-solid fa-plus"></i>
             </div>
-            <a href="#" class="mobile-nav-btn">
-                <i class="fa-solid fa-chart-line"></i>
-                <span>Activity</span>
-            </a>
-            <a href="#" class="mobile-nav-btn">
-                <i class="fa-solid fa-ellipsis"></i>
-                <span>More</span>
-            </a>
         </nav>
     </div>
 

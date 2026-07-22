@@ -195,12 +195,14 @@ function initAuthController() {
 function updateHeaderUserProfile() {
     const curUser = getCurrentUser();
     const avatarImg = document.getElementById('header-user-avatar');
+    const mobileAvatarImg = document.getElementById('mobile-user-avatar-img');
     const nameEl = document.getElementById('menu-user-name');
     const emailEl = document.getElementById('menu-user-email');
     const roleEl = document.getElementById('menu-user-role');
 
     if (curUser) {
         if (avatarImg) avatarImg.src = curUser.avatar;
+        if (mobileAvatarImg) mobileAvatarImg.src = curUser.avatar;
         if (nameEl) nameEl.textContent = curUser.name;
         if (emailEl) emailEl.textContent = curUser.email;
         if (roleEl) roleEl.textContent = curUser.role;
