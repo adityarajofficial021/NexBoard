@@ -137,6 +137,9 @@ export function formatRelativeTime(isoString) {
     if (!isoString) return 'Just now';
     try {
         const date = new Date(isoString);
+        if (isNaN(date.getTime())) {
+            return isoString;
+        }
         const now = new Date();
         const diffMs = now - date;
         const diffSecs = Math.floor(diffMs / 1000);
