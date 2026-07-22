@@ -18,7 +18,7 @@ export const currentFilters = {
  */
 export function initFilteringSystem() {
     const desktopSearchInput = document.getElementById('desktop-search');
-    const filterBtn = document.querySelector('.btn-filter');
+    const filterBtn = document.getElementById('btn-filter-toggle');
     const filterPanel = document.getElementById('filter-panel');
     
     const filterAssignee = document.getElementById('filter-assignee');
@@ -44,7 +44,7 @@ export function initFilteringSystem() {
 
         // Close dropdown panel if clicking anywhere outside of it
         document.addEventListener('click', (e) => {
-            if (!filterPanel.contains(e.target) && e.target !== filterBtn) {
+            if (filterPanel && !filterPanel.contains(e.target) && e.target !== filterBtn) {
                 filterPanel.style.display = 'none';
             }
         });
@@ -95,6 +95,7 @@ export function initFilteringSystem() {
  * Filter utility logic comparing all criteria sets down against active task objects
  */
 export function getFilteredTasks() {
+    const today = new Date().setHours(0,0,0,0);
     return tasks.filter(task => {
         // Condition A: Search query checking
         const matchesSearch = task.title.toLowerCase().includes(currentFilters.searchQuery) ||
@@ -108,10 +109,22 @@ export function getFilteredTasks() {
         const matchesPriority = currentFilters.priority === '' || 
                                 task.priority.toLowerCase() === currentFilters.priority.toLowerCase();
 
-        // Condition D: Due Status / Workflow State check (Mappings matching mock keys)
-        const matchesDueStatus = currentFilters.dueStatus === '' || 
-                                 task.status.toLowerCase() === currentFilters.dueStatus.toLowerCase() ||
-                                 (currentFilters.dueStatus === 'overdue' && task.status === 'todo'); // Overdue mockup mapping rule
+        // Condition D: Due Status Check (real date comparison)
+        let matchesDueStatus = true;
+        if (currentFilters.dueStatus) {
+            if (!task.dueDate || task.status === 'done') {
+                matchesDueStatus = false;
+            } else {
+                const taskDate = new Date(task.dueDate).setHours(0,0,0,0);
+                if (currentFilters.dueStatus === 'overdue') {
+                    matchesDueStatus = taskDate < today;
+                } else if (currentFilters.dueStatus === 'today') {
+                    matchesDueStatus = taskDate === today;
+                } else if (currentFilters.dueStatus === 'upcoming') {
+                    matchesDueStatus = taskDate > today;
+                }
+            }
+        }
 
         return matchesSearch && matchesAssignee && matchesPriority && matchesDueStatus;
     });
